@@ -322,7 +322,7 @@ vecf inverseQuantization(vecf Qtable, vecf Qcoeffs, int N) {
     return unquantized;
 }
 
-void approximate(vecf A, string f_A_dct, string f_A_Qdct, string f_A_IQdct, string f_A_IQidct, vecf Qtable, int N, int b) {
+vecf approximate(vecf A, string f_A_dct, string f_A_Qdct, string f_A_IQdct, string f_A_IQidct, vecf Qtable, int N, int b) {
     // DCT transform + Quantization + inverse quantization + inverse DCT transform
     // b = blocksize
     vecf dct1D = createDCTmatrix(b);
@@ -350,6 +350,7 @@ void approximate(vecf A, string f_A_dct, string f_A_Qdct, string f_A_IQdct, stri
         }
     }
     store(f_A_dct, A_dct); store(f_A_Qdct, A_Qdct); store(f_A_IQdct, A_IQdct); store(f_A_IQidct, A_IQidct);
+    return A_IQidct;
 }
 
 vecf encode(vecf A, vecf Qtable, int N, int b) {

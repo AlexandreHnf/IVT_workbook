@@ -64,6 +64,7 @@ typedef vector<vector<float>> vecf2;
 
 // SESSION 5
 #define FILE_32_QDCT "session5/10_1_qdct_lena32x32.raw"
+#define FILE_AVERAGE_DOWNSIZED "session5/10_1_downsized_average_lena32_generated_manually.raw"
 #define FILE_DELTA_DC_TXT "session5/10_2_delta_dct.txt"
 #define FILE_RECONSTRUCTED_DELTA "session5/10_3_reconstructed_delta_dct.raw"
 #define FILE_11_2_TXT "session5/11_2_RLE.txt"
@@ -158,15 +159,20 @@ void ex4_2() {
 
 void ex4_4() {
     cout << "----- 4.4" << endl;
+    vecf original_lena = load(FILE_LENA, 256*256);
     vecf uniform_image = load(FILE_UNIFORM, 256*256);
-    vecf uniform_lena = load(FILE_LENA, 256*256);
-    imageAddition(uniform_lena, uniform_image, 256);
+    vecf lena_u = load(FILE_LENA, 256*256);
+    vecf uniform_lena = imageAddition(lena_u, uniform_image, 256);
     store(FILE_UNIFORM_LENA, uniform_lena);
+    cout << "MSE lena - uniform lena = " << mse(original_lena, uniform_lena, 256) << endl;
+    cout << "PSNR lena - uniform lena = " << psnr(original_lena, uniform_lena, 255, 256) << endl;
 
     vecf gaussian_image = load(FILE_GAUSSIAN, 256*256);
-    vecf gaussian_lena = load(FILE_LENA, 256*256);
-    imageAddition(gaussian_lena, gaussian_image, 256);
+    vecf lena_g = load(FILE_LENA, 256*256);
+    vecf gaussian_lena = imageAddition(lena_g, gaussian_image, 256);
     store(FILE_GAUSSIAN_LENA, gaussian_lena);
+    cout << "MSE lena - gaussian lena = " << mse(original_lena, gaussian_lena, 256) << endl;
+    cout << "PSNR lena - gaussian lena = " << psnr(original_lena, gaussian_lena, 255, 256) << endl;
 }
 
 void ex5_1() {
@@ -175,6 +181,7 @@ void ex5_1() {
     vecf blurry_lena = load(FILE_BLURRY_LENA, 256*256);
     float blurry_lena_mse = mse(blurry_lena, original_lena, 256);
     cout << "MSE blurry lena: " << blurry_lena_mse << endl;
+    cout << "PSNR blurry lena : " << psnr(blurry_lena, original_lena, 255, 256) << endl;
 }
 
 void ex5_2() {
@@ -274,6 +281,8 @@ void ex7_2() {
     vecf dct_lena = load(FILE_DCT_LENA, 256*256);
     vecf threshold_lena = threshold(dct_lena, 10, 256);
     store(FILE_THRESHOLD_DCT_LENA, threshold_lena);
+    cout << "MSE DCT lena - threshold DCT lena = " << mse(dct_lena, threshold_lena, 256) << endl;
+    cout << "PSNR DCT lena - threshold DCT lena = " << psnr(dct_lena, threshold_lena,255, 256) << endl;
 }
 
 void ex7_3_1() {
@@ -342,7 +351,9 @@ void ex8_2() {
     cout << "----- 8.2" << endl;
     vecf lena = load(FILE_LENA, 256*256);
     vecf Qtable = getQtable();
-    approximate(lena, FILE_DCT_8_2, FILE_QDCT_8_2, FILE_IQDCT_8_2, FILE_IQIDCT_8_2, Qtable, 256, 8);
+    vecf decoded = approximate(lena, FILE_DCT_8_2, FILE_QDCT_8_2, FILE_IQDCT_8_2, FILE_IQIDCT_8_2, Qtable, 256, 8);
+    cout << "MSE approximated lena - lena = " << mse(lena, decoded, 256) << endl;
+    cout << "PSNR approximated lena - lena = " << psnr(lena, decoded, 255, 256) << endl;
 }
 
 void ex8_3() {
@@ -425,6 +436,9 @@ void ex10_1() {
     vecf quantized_DC = load(FILE_QDCT_8_2, 256*256);
     vecf res = quantizedDCtermsMat(quantized_DC, 8, 256);
     store(FILE_32_QDCT, res);
+    vecf downsized_lena = load(FILE_AVERAGE_DOWNSIZED, 32*32);
+    cout << "MSE quantized DC lena - downsized average lena = " << mse(quantized_DC, downsized_lena, 32) << endl;
+    cout << "PSNR quantized DC lena - downsized average lena = " << psnr(quantized_DC, downsized_lena, 255,32) << endl;
 }
 
 void ex10_2() {
@@ -569,6 +583,10 @@ void ex14_2() {
     vecf decompressed_lena = decompress(FILE_BITSTREAM_DC_14_1, FILE_BITSTREAM_AC_14_1, 256, 8);
     store(FILE_DECOMPRESSED_LENA_14_2, decompressed_lena);
     clip2(FILE_CLIP_14_2, decompressed_lena, 256);
+
+    vecf original_lena = load(FILE_LENA, 256*256);
+    cout << "MSE original lena - decompressed lena = " << mse(original_lena, decompressed_lena, 256) << endl;
+    cout << "PSNR original lena - decompressed lena = " << psnr(original_lena, decompressed_lena, 255, 256) << endl;
 }
 
 void session6() {
