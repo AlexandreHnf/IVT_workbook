@@ -34,8 +34,8 @@ typedef vector<vector<float>> vecf2;
 #define FILE_BLURRY_LENA  "session2/5_1_blurry_lena_generated_manually.raw"
 #define FILE_GAUSSIAN_BLURRY_LENA_5_2  "session2/5_2_blurry_gaussian_high_lena_256x256.raw"
 #define FILE_GAUSSIAN_LENA_5_3  "session2/5_3_gaussian_lena_256x256.raw"
-#define FILE_GAUSSIAN_LENA_5_4_1  "session2/5_4_gaussian_lena_256x256_1.raw"
-#define FILE_GAUSSIAN_LENA_5_4_1_5  "session2/5_4_gaussian_lena_256x256_1_5.raw"
+#define FILE_GAUSSIAN_LENA_5_4_1  "session2/5_4_gaussian_lena_1_generated_manually.raw"
+#define FILE_GAUSSIAN_LENA_5_4_1_5  "session2/5_4_gaussian_lena_1_5_generated_manually.raw"
 
 // SESSION 3
 #define FILE_DCT_MATRIX  "session3/6_1_dct_matrix.raw"
@@ -180,17 +180,17 @@ void ex5_1() {
 void ex5_2() {
     cout << "----- 5.2" << endl;
     vecf high_gaussian_image = generateGDRN(0.0, 10, 256); // gaussian image with high variance
-    vecf gaussian_lena = load(FILE_BLURRY_LENA, 256*256);
-    imageAddition(gaussian_lena, high_gaussian_image, 256); // blurry lena + high variance gaussian
-    store(FILE_GAUSSIAN_BLURRY_LENA_5_2, gaussian_lena);
+    vecf blurry_lena = load(FILE_BLURRY_LENA, 256*256);
+    vecf gaussian_blurry_lena = imageAddition(blurry_lena, high_gaussian_image, 256); // blurry lena + high variance gaussian
+    store(FILE_GAUSSIAN_BLURRY_LENA_5_2, gaussian_blurry_lena);
 }
 
-void ex5_3(float sigma, string filename) {
+void ex5_3() {
     cout << "----- 5.3" << endl;
-    vecf gaussian_image = generateGDRN(0.0, sigma, 256); // gaussian image with variance = mse blurry lena
-    vecf gaussian_lena = load(FILE_LENA, 256*256);
-    imageAddition(gaussian_lena, gaussian_image, 256); // Lena + gaussian
-    store(filename, gaussian_lena);
+    vecf gaussian_image = generateGDRN(0.0, sqrt(40.7731), 256); // gaussian image with variance = mse blurry lena
+    vecf lena = load(FILE_LENA, 256*256);
+    vecf gaussian_lena = imageAddition(lena, gaussian_image, 256); // Lena + gaussian
+    store(FILE_GAUSSIAN_LENA_5_3, gaussian_lena);
 
     vecf original_lena = load(FILE_LENA, 256*256);
     float gaussian_lena_mse = mse(gaussian_lena, original_lena, 256);
@@ -200,10 +200,11 @@ void ex5_3(float sigma, string filename) {
 void ex5_4(string other_gaussian_file, float sigma) {
     cout << "----- 5.4" << endl;
 
-    vecf gaussian_lena3 = load(FILE_GAUSSIAN_LENA_5_3, 256*256);
-    vecf blurry_gaussian_lena3 = load(other_gaussian_file, 256*256);
-    float blurry_gaussian3_mse = mse(blurry_gaussian_lena3, gaussian_lena3, 256);
-    cout << "MSE 5.4 sigma = " << sigma << ": " << blurry_gaussian3_mse << endl;
+    vecf gaussian_lena = load(FILE_GAUSSIAN_LENA_5_3, 256*256);
+    vecf blurry_gaussian_lena = load(other_gaussian_file, 256*256);
+    float blurry_gaussian_mse = mse(blurry_gaussian_lena, gaussian_lena, 256);
+    cout << "MSE between gaussian lena and other gaussian lena with sigma = " << sigma <<
+                ": " << blurry_gaussian_mse << endl;
 }
 
 void session2() {
@@ -213,25 +214,17 @@ void session2() {
 
     cout << "SESSION 2" << endl;
 
-    // ===========  [SESSION 2 ex 4.1]
     ex4_1();
 
-    // =========generate image with gaussian distribution [SESSION 2 ex 4.2]
     ex4_2();
 
-    // =========lena with uniform and gaussian [SESSION 2 ex 4.4]
     ex4_4();
 
-    // =========lena blurry [SESSION 2 ex 5.1]
     ex5_1();
 
-    // =========add gaussian distribution to blurry lena [SESSION 2 ex 5.2]
     ex5_2();
 
-    // =========add gaussian to original lena [SESSION 2 ex 5.3]
-    ex5_3(sqrt(40.7731), FILE_GAUSSIAN_LENA_5_3);
-    ex5_3(1, FILE_GAUSSIAN_LENA_5_4_1);
-    ex5_3(1.5, FILE_GAUSSIAN_LENA_5_4_1_5);
+    ex5_3();
 
     // [SESSION 2 ex 5.4]
     ex5_4(FILE_GAUSSIAN_LENA_5_4_1, 1);
