@@ -15,72 +15,68 @@ typedef float img32[32*32];
 typedef vector<float> vecf;
 typedef vector<vector<float>> vecf2;
 
+// TODO : rename each file with IVT2020_Heneffe_Alexandre
 #define TEST_LOAD_STORE "test_files/test_load_store.raw"
 #define TEST_LOAD_STORE_TXT "test_files/test_load_store_txt.txt"
 #define TEST_LOAD_STORE_BITSTR "test_files/test_load_store_bitstream.txt"
 
-// SESSION 1
 #define FILE_LENA "lena_256x256.raw"
-#define FILE_COS_PATTERN  "session1/img_cos_pattern.raw"
-#define FILE_COS_PATTERN_LENA  "session1/modified_lena_256x256.raw"
+
+// SESSION 1
+#define FILE_COS_PATTERN  "session1/2_2_img_cos_pattern.raw"
+#define FILE_COS_PATTERN_LENA  "session1/3_3_modified_lena_256x256.raw"
 
 // SESSION 2
-#define FILE_UNIFORM  "session2/uniform_image.raw"
-#define FILE_GAUSSIAN  "session2/gaussian_image.raw"
-#define FILE_UNIFORM_LENA  "session2/uniform_lena_256x256.raw"
-#define FILE_GAUSSIAN_LENA  "session2/gaussian_lena_256x256.raw"
-#define FILE_BLURRY_LENA  "session2/blurry_lena_generated_manually.raw"
-#define FILE_GAUSSIAN_BLURRY_LENA_5_2  "session2/blurry_gaussian_high_lena_256x256_5_2.raw"
-#define FILE_GAUSSIAN_LENA_5_3  "session2/gaussian_lena_256x256_5_3.raw"
-#define FILE_GAUSSIAN_LENA_5_3_1  "session2/gaussian_lena_256x256_5_3_1.raw"
-#define FILE_GAUSSIAN_LENA_5_3_1_5  "session2/gaussian_lena_256x256_5_3_1_5.raw"
+#define FILE_UNIFORM  "session2/4_1_uniform_image.raw"
+#define FILE_GAUSSIAN  "session2/4_2_gaussian_image.raw"
+#define FILE_UNIFORM_LENA  "session2/4_4_1_uniform_lena_256x256.raw"
+#define FILE_GAUSSIAN_LENA  "session2/4_4_2_gaussian_lena_256x256.raw"
+#define FILE_BLURRY_LENA  "session2/5_1_blurry_lena_generated_manually.raw"
+#define FILE_GAUSSIAN_BLURRY_LENA_5_2  "session2/5_2_blurry_gaussian_high_lena_256x256.raw"
+#define FILE_GAUSSIAN_LENA_5_3  "session2/5_3_gaussian_lena_256x256.raw"
+#define FILE_GAUSSIAN_LENA_5_4_1  "session2/5_4_gaussian_lena_256x256_1.raw"
+#define FILE_GAUSSIAN_LENA_5_4_1_5  "session2/5_4_gaussian_lena_256x256_1_5.raw"
 
 // SESSION 3
-#define FILE_DCT_MATRIX  "session3/dct_matrix.raw"
-#define FILE_IDCT_MATRIX  "session3/idct_matrix.raw"
-#define FILE_DCT_LENA  "session3/dct_lena.raw"
-#define FILE_THRESHOLD_DCT_LENA  "session3/threshold_dct_lena10.raw"
-#define FILE_RECONSTRUCTED_THRESHOLD_DCT_LENA_10  "session3/rec_threshold_dct_lena10.raw"
-#define FILE_RECONSTRUCTED_THRESHOLD_DCT_LENA_5  "session3/rec_threshold_dct_lena5.raw"
-#define FILE_RECONSTRUCTED_THRESHOLD_DCT_LENA_20  "session3/rec_threshold_dct_lena20.raw"
-#define FILE_RECONSTRUCTED_THRESHOLD_DCT_LENA_2  "session3/rec_threshold_dct_lena2.raw"
-#define FILE_RECONSTRUCTED_DCT_LENA  "session3/rec_dct_lena.raw"
-#define FILE_RECONSTRUCTED_DCT_LENA2  "session3/rec_dct_lena2.raw"
+#define FILE_DCT_MATRIX  "session3/6_1_dct_matrix.raw"
+#define FILE_IDCT_MATRIX  "session3/6_3_idct_matrix.raw"
+#define FILE_DCT_LENA  "session3/7_1_dct_lena.raw"
+#define FILE_THRESHOLD_DCT_LENA  "session3/7_2_threshold_dct_lena10.raw"
+#define FILE_RECONSTRUCTED_THRESHOLD_DCT_LENA_10  "session3/7_3_rec_threshold_dct_lena10.raw"
+#define FILE_RECONSTRUCTED_THRESHOLD_DCT_LENA_5  "session3/7_3_rec_threshold_dct_lena5.raw"
+#define FILE_RECONSTRUCTED_THRESHOLD_DCT_LENA_20  "session3/7_3_rec_threshold_dct_lena20.raw"
+#define FILE_RECONSTRUCTED_THRESHOLD_DCT_LENA_2  "session3/7_3_rec_threshold_dct_lena2.raw"
+#define FILE_RECONSTRUCTED_DCT_LENA  "session3/7_3_rec_dct_lena.raw"
 
 // SESSION 4
-#define FILE_QUANTIZATION  "session4/quantization.raw"
-#define FILE_8BPP_LENA  "session4/8bpp_lena.raw"
-#define FILE_DCT_MATRIX8  "session4/dct_matrix8.raw"
+#define FILE_QUANTIZATION  "session4/8_1_quantization.raw"
+#define FILE_8BPP_LENA  "session4/8_3_8bpp_lena.raw"
 #define FILE_DCT_8_2  "session4/8_2_1_lena_dct.raw"
 #define FILE_QDCT_8_2  "session4/8_2_2_lena_Qdct.raw"
 #define FILE_IQDCT_8_2  "session4/8_2_3_lena_IQdct.raw"
 #define FILE_IQIDCT_8_2  "session4/8_2_4_lena_IQidct.raw"
 #define FILE_IQIDCT_8_2_8bpp "session4/8_4_lena_8bpp.raw"
 #define FILE_ENCODED_LENA8_5  "session4/8_5_encoded_lena.raw"
-#define FILE_ENCODED_LENA8_5_t  "session4/8_5_t_encoded_lena.raw"
 #define FILE_DECODED_LENA8_5  "session4/8_5_decoded_lena.raw"
 #define FILE_CONTIGUOUS_9 "session4/9_contiguous_lena.raw"
 #define FILE_INTERLEAVED_9 "session4/9_interleaved_lena.raw"
 #define FILE_INV_INTERLEAVED_9 "session4/9_inv_interleaved_lena.raw"
 
 // SESSION 5
-#define FILE_32_QDCT "session5/qdct_lena32x32_10_1.raw"
-#define FILE_DELTA_DC_TXT "session5/delta_dct_10_2.txt"
-#define FILE_RECONSTRUCTED_DELTA "session5/reconstructed_delta_dct_10_3.raw"
-#define FILE_DC_32_11_1 "session5/DC_image_11_1.raw"
-#define FILE_11_2_TXT "session5/11_2_txt.txt"
-#define FILE_11_2_TXT_2 "session5/11_2_noRLE_txt.txt"
-#define FILE_DECODED_11_3 "session5/decoded_lena_11_3.raw"
-#define FILE_TEST_RECONSTRUCTED_INTERLEAVED "session5/test_reconstructed_interleaved.raw"
+#define FILE_32_QDCT "session5/10_1_qdct_lena32x32.raw"
+#define FILE_DELTA_DC_TXT "session5/10_2_delta_dct.txt"
+#define FILE_RECONSTRUCTED_DELTA "session5/10_3_reconstructed_delta_dct.raw"
+#define FILE_11_2_TXT "session5/11_2_RLE.txt"
+#define FILE_DECODED_11_3 "session5/11_3_decoded_lena.raw"
 #define FILE_12_2_NORMALIZED "session5/12_2_normalized.txt"
 #define FILE_12_2_OCC "session5/12_2_occ.txt"
 
 // SESSION 6
-#define FILE_BITSTREAM_AC_14_1 "session6/bitstream_AC_14_1.txt"
-#define FILE_BITSTREAM_DC_14_1 "session6/bitstream_DC_14_1.txt"
-#define FILE_DELTA_DC_14_1 "session6/delta_encoded_DC_14_1.txt"
-#define FILE_DECOMPRESSED_LENA_14_2 "session6/decompressed_lena_13_2.raw"
-#define FILE_CLIP_14_2 "session6/clipped_decompressed_14_2.raw"
+#define FILE_BITSTREAM_AC_14_1 "session6/14_1_bitstream_AC.txt"
+#define FILE_BITSTREAM_DC_14_1 "session6/14_1_bitstream_DC.txt"
+#define FILE_DELTA_DC_14_1 "session6/14_1_delta_encoded_DC.txt"
+#define FILE_DECOMPRESSED_LENA_14_2 "session6/14_2_decompressed_lena.raw"
+#define FILE_CLIP_14_2 "session6/14_2_clipped_decompressed.raw"
 
 
 
@@ -88,31 +84,31 @@ void ex2_2() {
     cout << "----- 2.2" << endl;
     vecf img_cos_pattern = generateCosPatternImage(256);
     //displayImage(img_cos_pattern, "cos pattern img created : ");
-    store2(FILE_COS_PATTERN, img_cos_pattern);
+    store(FILE_COS_PATTERN, img_cos_pattern);
 }
 
 void ex3_3() {
     cout << "----- 3.3" << endl;
 
     vecf img_cos_pattern = generateCosPatternImage(256);
-    vecf lena = load2(FILE_LENA, 256*256);
+    vecf lena = load(FILE_LENA, 256*256);
     vecf cos_lena = imageProduct(lena, img_cos_pattern, 256);
     // Store modified lena
-    store2(FILE_COS_PATTERN_LENA, cos_lena);
+    store(FILE_COS_PATTERN_LENA, cos_lena);
 }
 
 void ex3_4() {
     cout << "----- 3.4" << endl;
-    vecf lena = load2(FILE_LENA, 256*256);
-    vecf cos_lena = load2(FILE_COS_PATTERN_LENA, 256*256);
+    vecf lena = load(FILE_LENA, 256*256);
+    vecf cos_lena = load(FILE_COS_PATTERN_LENA, 256*256);
     float MSE = mse(lena, cos_lena, 256);
     cout << "MSE : " << MSE << endl;
 }
 
 void ex3_5() {
     cout << "----- 3.5" << endl;
-    vecf lena = load2(FILE_LENA, 256*256);
-    vecf modified_lena = load2(FILE_COS_PATTERN_LENA, 256*256);
+    vecf lena = load(FILE_LENA, 256*256);
+    vecf modified_lena = load(FILE_COS_PATTERN_LENA, 256*256);
     float PSNR = psnr(lena, modified_lena, 255, 256);
     cout << "PSNR :" << PSNR << endl;
 }
@@ -142,7 +138,7 @@ void ex4_1() {
     cout << "----- 4.1" << endl;
     // generate image with uniform distribution
     vecf uniform_image = generateUDRN(-0.5, 0.5, 256);
-    store2(FILE_UNIFORM, uniform_image);
+    store(FILE_UNIFORM, uniform_image);
     // what is the expected MSE of the random image, compared to the expected mean 0
     vecf zero_img(256*256, 0);
     float uniform_mse = mse(uniform_image, zero_img, 256);
@@ -153,7 +149,7 @@ void ex4_2() {
     cout << "----- 4.2" << endl;
     // generate image with gaussian distribution
     vecf gaussian_image = generateGDRN(0.0, sqrt(0.0830861), 256);
-    store2(FILE_GAUSSIAN, gaussian_image);
+    store(FILE_GAUSSIAN, gaussian_image);
     // what is the expected MSE of the random image, compared to the expected mean 0
     vecf zero_img(256*256, 0);
     float gaussian_mse = mse(gaussian_image, zero_img, 256);
@@ -162,21 +158,21 @@ void ex4_2() {
 
 void ex4_4() {
     cout << "----- 4.4" << endl;
-    vecf uniform_image = load2(FILE_UNIFORM, 256*256);
-    vecf uniform_lena = load2(FILE_LENA, 256*256);
+    vecf uniform_image = load(FILE_UNIFORM, 256*256);
+    vecf uniform_lena = load(FILE_LENA, 256*256);
     imageAddition(uniform_lena, uniform_image, 256);
-    store2(FILE_UNIFORM_LENA, uniform_lena);
+    store(FILE_UNIFORM_LENA, uniform_lena);
 
-    vecf gaussian_image = load2(FILE_GAUSSIAN, 256*256);
-    vecf gaussian_lena = load2(FILE_LENA, 256*256);
+    vecf gaussian_image = load(FILE_GAUSSIAN, 256*256);
+    vecf gaussian_lena = load(FILE_LENA, 256*256);
     imageAddition(gaussian_lena, gaussian_image, 256);
-    store2(FILE_GAUSSIAN_LENA, gaussian_lena);
+    store(FILE_GAUSSIAN_LENA, gaussian_lena);
 }
 
 void ex5_1() {
     cout << "----- 5.1" << endl;
-    vecf original_lena = load2(FILE_LENA, 256*256);
-    vecf blurry_lena = load2(FILE_BLURRY_LENA, 256*256);
+    vecf original_lena = load(FILE_LENA, 256*256);
+    vecf blurry_lena = load(FILE_BLURRY_LENA, 256*256);
     float blurry_lena_mse = mse(blurry_lena, original_lena, 256);
     cout << "MSE blurry lena: " << blurry_lena_mse << endl;
 }
@@ -184,19 +180,19 @@ void ex5_1() {
 void ex5_2() {
     cout << "----- 5.2" << endl;
     vecf high_gaussian_image = generateGDRN(0.0, 10, 256); // gaussian image with high variance
-    vecf gaussian_lena = load2(FILE_BLURRY_LENA, 256*256);
+    vecf gaussian_lena = load(FILE_BLURRY_LENA, 256*256);
     imageAddition(gaussian_lena, high_gaussian_image, 256); // blurry lena + high variance gaussian
-    store2(FILE_GAUSSIAN_BLURRY_LENA_5_2, gaussian_lena);
+    store(FILE_GAUSSIAN_BLURRY_LENA_5_2, gaussian_lena);
 }
 
 void ex5_3(float sigma, string filename) {
     cout << "----- 5.3" << endl;
     vecf gaussian_image = generateGDRN(0.0, sigma, 256); // gaussian image with variance = mse blurry lena
-    vecf gaussian_lena = load2(FILE_LENA, 256*256);
+    vecf gaussian_lena = load(FILE_LENA, 256*256);
     imageAddition(gaussian_lena, gaussian_image, 256); // Lena + gaussian
-    store2(filename, gaussian_lena);
+    store(filename, gaussian_lena);
 
-    vecf original_lena = load2(FILE_LENA, 256*256);
+    vecf original_lena = load(FILE_LENA, 256*256);
     float gaussian_lena_mse = mse(gaussian_lena, original_lena, 256);
     cout << "MSE gaussian lena with same mse than blurry lena : " << gaussian_lena_mse << endl;
 }
@@ -204,8 +200,8 @@ void ex5_3(float sigma, string filename) {
 void ex5_4(string other_gaussian_file, float sigma) {
     cout << "----- 5.4" << endl;
 
-    vecf gaussian_lena3 = load2(FILE_GAUSSIAN_LENA_5_3, 256*256);
-    vecf blurry_gaussian_lena3 = load2(other_gaussian_file, 256*256);
+    vecf gaussian_lena3 = load(FILE_GAUSSIAN_LENA_5_3, 256*256);
+    vecf blurry_gaussian_lena3 = load(other_gaussian_file, 256*256);
     float blurry_gaussian3_mse = mse(blurry_gaussian_lena3, gaussian_lena3, 256);
     cout << "MSE 5.4 sigma = " << sigma << ": " << blurry_gaussian3_mse << endl;
 }
@@ -234,19 +230,19 @@ void session2() {
 
     // =========add gaussian to original lena [SESSION 2 ex 5.3]
     ex5_3(sqrt(40.7731), FILE_GAUSSIAN_LENA_5_3);
-    ex5_3(1, FILE_GAUSSIAN_LENA_5_3_1);
-    ex5_3(1.5, FILE_GAUSSIAN_LENA_5_3_1_5);
+    ex5_3(1, FILE_GAUSSIAN_LENA_5_4_1);
+    ex5_3(1.5, FILE_GAUSSIAN_LENA_5_4_1_5);
 
     // [SESSION 2 ex 5.4]
-    ex5_4(FILE_GAUSSIAN_LENA_5_3_1, 1);
-    ex5_4(FILE_GAUSSIAN_LENA_5_3_1_5, 1.5);
+    ex5_4(FILE_GAUSSIAN_LENA_5_4_1, 1);
+    ex5_4(FILE_GAUSSIAN_LENA_5_4_1_5, 1.5);
 
 }
 
 void ex6_1() {
     cout << "----- 6.1" << endl;
     vecf dct_mat = createDCTmatrix(256);
-    store2(FILE_DCT_MATRIX, dct_mat);
+    store(FILE_DCT_MATRIX, dct_mat);
 
 }
 
@@ -268,40 +264,41 @@ void ex6_3() {
     // Check that the matrix is orthonormal :
     vecf dct = createDCTmatrix(256);
     vecf idct = createIDCTmatrix(256);
+    store(FILE_IDCT_MATRIX, idct);
     bool iso = isOrthonormal(idct, dct, 256);
     cout << "is orthogonal ? " << iso << endl;
 }
 
 void ex7_1() {
     cout << "----- 7.1" << endl;
-    vecf original_lena = load2(FILE_LENA, 256*256);
+    vecf original_lena = load(FILE_LENA, 256*256);
     vecf res = transform(original_lena, 256);
-    store2(FILE_DCT_LENA, res);
+    store(FILE_DCT_LENA, res);
 }
 
 void ex7_2() {
     cout << "----- 7.2" << endl;
-    vecf dct_lena = load2(FILE_DCT_LENA, 256*256);
+    vecf dct_lena = load(FILE_DCT_LENA, 256*256);
     vecf threshold_lena = threshold(dct_lena, 10, 256);
-    store2(FILE_THRESHOLD_DCT_LENA, threshold_lena);
+    store(FILE_THRESHOLD_DCT_LENA, threshold_lena);
 }
 
 void ex7_3_1() {
     cout << "----- 7.3.1" << endl;
-    vecf lena = load2(FILE_LENA, 256*256);
+    vecf lena = load(FILE_LENA, 256*256);
     vecf transformed = transform(lena, 256);
     vecf reconstructed = inverseTransform(transformed, 256);
-    store2(FILE_RECONSTRUCTED_DCT_LENA, reconstructed);
+    store(FILE_RECONSTRUCTED_DCT_LENA, reconstructed);
 }
 
 void ex7_3_thresh(string filename, float t) {
-    vecf lena = load2(FILE_LENA, 256*256);
+    vecf lena = load(FILE_LENA, 256*256);
     vecf transformed = transform(lena, 256);
     vecf transformed_thresh = threshold(transformed, t, 256);
     vecf reconstructed = inverseTransform(transformed_thresh, 256);
     float psnr_val = psnr(reconstructed, lena, 255, 256);
     cout << "PSNR reconstructed lena with threshold " << t << " : " << psnr_val << endl;
-    store2(filename, reconstructed);
+    store(filename, reconstructed);
 }
 
 void ex7_3_2() {
@@ -345,58 +342,58 @@ void session3() {
 void ex8_1() {
     cout << "----- 8.1" << endl;
     vecf Qtable = getQtable();
-    store2(FILE_QUANTIZATION, Qtable);
+    store(FILE_QUANTIZATION, Qtable);
 }
 
 void ex8_2() {
     cout << "----- 8.2" << endl;
-    vecf lena = load2(FILE_LENA, 256*256);
+    vecf lena = load(FILE_LENA, 256*256);
     vecf Qtable = getQtable();
     approximate(lena, FILE_DCT_8_2, FILE_QDCT_8_2, FILE_IQDCT_8_2, FILE_IQIDCT_8_2, Qtable, 256, 8);
 }
 
 void ex8_3() {
     cout << "----- 8.3" << endl;
-    vecf lena = load2(FILE_LENA, 256*256);
+    vecf lena = load(FILE_LENA, 256*256);
     clip2(FILE_8BPP_LENA, lena, 256);
 }
 
 void ex8_4() {
     cout << "----- 8.4" << endl;
-    vecf approximated_lena = load2(FILE_IQIDCT_8_2, 256*256);
+    vecf approximated_lena = load(FILE_IQIDCT_8_2, 256*256);
     clip2(FILE_IQIDCT_8_2_8bpp, approximated_lena, 256);
 }
 
 void ex8_5() {
     cout << "----- 8.5" << endl;
-    vecf lena = load2(FILE_LENA, 256*256);
+    vecf lena = load(FILE_LENA, 256*256);
     vecf Qtable = getQtable();
 
     vecf encoded_lena = encode(lena, Qtable, 256, 8);
-    store2(FILE_ENCODED_LENA8_5, encoded_lena);
+    store(FILE_ENCODED_LENA8_5, encoded_lena);
     vecf decoded_lena = decode(encoded_lena, Qtable, 256, 8);
-    store2(FILE_DECODED_LENA8_5, decoded_lena);
+    store(FILE_DECODED_LENA8_5, decoded_lena);
 }
 
 void ex9_1_1() {
     cout << "----- 9.1.1" << endl;
-    vecf lena = load2(FILE_LENA, 256*256);
+    vecf lena = load(FILE_LENA, 256*256);
     vecf Qtable = getQtable();
 
     vecf contiguous_dct_lena = encode(lena, Qtable, 256, 8);
-    store2(FILE_INTERLEAVED_9, contiguous_dct_lena);
+    store(FILE_CONTIGUOUS_9, contiguous_dct_lena);
 }
 
 void ex9_1_2() {
     cout << "----- 9.1.2" << endl;
     // transformm a 256x256 pixels layout with 32x32 grid of 8x8 contiguous DCT coefs :
-    vecf contiguous_dct_lena = load2(FILE_DCT_8_2, 256*256);
+    vecf contiguous_dct_lena = load(FILE_CONTIGUOUS_9, 256*256);
     vecf interleaved_dct_lena = interleavedLayout(contiguous_dct_lena, 8, 256);
-    store2(FILE_INTERLEAVED_9, interleaved_dct_lena);
+    store(FILE_INTERLEAVED_9, interleaved_dct_lena);
 
     // inverse interleave :
     vecf inv_interleaved = interleavedLayout(interleaved_dct_lena, 32, 256);
-    store2(FILE_INV_INTERLEAVED_9, inv_interleaved);
+    store(FILE_INV_INTERLEAVED_9, inv_interleaved);
 }
 
 
@@ -432,14 +429,14 @@ void session4() {
 void ex10_1() {
     cout << "----- 10.1" << endl;
     // create a 32x32 pixels image from quantized DC terms of each 8x8 pixels block
-    vecf quantized_DC = load2(FILE_QDCT_8_2, 256*256);
+    vecf quantized_DC = load(FILE_QDCT_8_2, 256*256);
     vecf res = quantizedDCtermsMat(quantized_DC, 8, 256);
-    store2(FILE_32_QDCT, res);
+    store(FILE_32_QDCT, res);
 }
 
 void ex10_2() {
     cout << "----- 10.2" << endl;
-    vecf QDCTmat = load2(FILE_32_QDCT, 32*32);
+    vecf QDCTmat = load(FILE_32_QDCT, 32*32);
     vecf deltaQDCTmat = deltaEncoding(QDCTmat, 32);
     storeTXTmatrix(FILE_DELTA_DC_TXT, deltaQDCTmat, 32*32);
 }
@@ -448,12 +445,12 @@ void ex10_3() {
     cout << "----- 10.3" << endl;
     vecf delta_QDCterms = loadTXTmatrix(FILE_DELTA_DC_TXT, 32*32);
     vecf deltaDecodedQDCT = deltaDecoding(delta_QDCterms, 32);
-    store2(FILE_RECONSTRUCTED_DELTA, deltaDecodedQDCT);
+    store(FILE_RECONSTRUCTED_DELTA, deltaDecodedQDCT);
 }
 
 void ex11_1() {
     cout << "----- 11.1" << endl;
-    vecf lena = load2(FILE_LENA, 256*256);
+    vecf lena = load(FILE_LENA, 256*256);
     vecf Qtable = getQtable();
     vecf contiguous_qdct_lena = encode(lena, Qtable, 256, 8);
 
@@ -468,7 +465,7 @@ void ex11_1() {
 
 vecf2 ex11_2() {
     cout << "----- 11.2" << endl;
-    vecf lena = load2(FILE_LENA, 256*256);
+    vecf lena = load(FILE_LENA, 256*256);
     img32 encodedDC;
     vecf2 encodedRLE = encodeRLE(lena, encodedDC, 256, 8);
     // showRunLengths(encodedRLE);
@@ -478,18 +475,18 @@ vecf2 ex11_2() {
 
 void ex11_3() {
     cout << "----- 11.3" << endl;
-    vecf lena = load2(FILE_LENA, 256*256);
+    vecf lena = load(FILE_LENA, 256*256);
     img32 encodedDC;
     vecf2 encodedRLE = encodeRLE(lena, encodedDC, 256, 8);
     vecf deltaEncodedDC = loadTXTmatrix(FILE_DELTA_DC_TXT, 32*32);
 
     vecf decoded = decodeRLE(encodedRLE, deltaEncodedDC, 256, 8);
-    store2(FILE_DECODED_11_3, decoded);
+    store(FILE_DECODED_11_3, decoded);
 }
 
 void ex12_1() {
     cout << "----- 12.1" << endl;
-    vecf lena = load2(FILE_LENA, 256*256);
+    vecf lena = load(FILE_LENA, 256*256);
     img32 encodedDC;
     vecf2 encodedRLE = encodeRLE(lena, encodedDC, 256, 8);
     vecf P = occurences(encodedRLE);
@@ -501,7 +498,7 @@ void ex12_1() {
 
 void ex12_2() {
     cout << "----- 12.2" << endl;
-    vecf lena = load2(FILE_LENA, 256*256);
+    vecf lena = load(FILE_LENA, 256*256);
     img32 encodedDC;
     vecf2 encodedRLE = encodeRLE(lena, encodedDC, 256, 8);
     vecf P = occurences(encodedRLE);
@@ -512,7 +509,7 @@ void ex12_2() {
 
 void ex12_3() {
     cout << "----- 12.3" << endl;
-    vecf lena = load2(FILE_LENA, 256*256);
+    vecf lena = load(FILE_LENA, 256*256);
     img32 encodedDC;
     vecf2 encodedRLE = encodeRLE(lena, encodedDC, 256, 8);
     vecf P = occurences(encodedRLE);
@@ -563,8 +560,9 @@ void session5() {
 void ex14_1() {
     cout << "----- 14.1" << endl;
 
-    vecf lena = load2(FILE_LENA, 256*256);
-    compress(FILE_BITSTREAM_DC_14_1, FILE_BITSTREAM_AC_14_1, lena, 256, 8);
+    vecf lena = load(FILE_LENA, 256*256);
+    float deltaEncodedDC[(256/8)*(256/8)];
+    compress(FILE_BITSTREAM_DC_14_1, FILE_BITSTREAM_AC_14_1, deltaEncodedDC, lena, 256, 8);
 }
 
 void ex14_2() {
@@ -576,7 +574,7 @@ void ex14_2() {
 //    assert((std::equal(std::begin(deltaEncodedDC), std::end(deltaEncodedDC), std::begin(deltaEncodedDC2)) == true));
 
     vecf decompressed_lena = decompress(FILE_BITSTREAM_DC_14_1, FILE_BITSTREAM_AC_14_1, 256, 8);
-    store2(FILE_DECOMPRESSED_LENA_14_2, decompressed_lena);
+    store(FILE_DECOMPRESSED_LENA_14_2, decompressed_lena);
     clip2(FILE_CLIP_14_2, decompressed_lena, 256);
 }
 
@@ -598,7 +596,7 @@ void session6() {
 void testing() {
     cout << "----- starting tests " << endl;
     int i = 0;
-    TEST_store_load2(TEST_LOAD_STORE); i++;
+    TEST_store_load(TEST_LOAD_STORE); i++;
     TEST_imageProduct(); i++;
     TEST_imageAddition(); i++;
     TEST_mse(); i++;

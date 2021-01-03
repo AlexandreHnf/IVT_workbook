@@ -10,7 +10,6 @@
 using namespace std;
 
 typedef float img[];
-typedef float img8[8*8];
 
 typedef vector<float> vecf;
 typedef vector<vector<float>> vecf2;
@@ -76,75 +75,36 @@ void displayImage(vecf image, string name, int N) {
     }
 }
 
-void store2(string filename, vecf image) {
+void store(string filename, vecf image) {
     ofstream file;
     file.open(filename, ios::out | ios::binary);
     if (file.is_open()) {
         file.write(reinterpret_cast<const char*>(&image[0]), image.size()*sizeof(float));
-//        file.write(reinterpret_cast<const char *>(image), sizeof(float[N]));
     } else {cout << "Error while opening the file : " << filename << endl; }
     file.close();
 }
 
-//void store(string filename, img image, int N) {
-//    ofstream file;
-//    file.open(filename, ios::out | ios::binary);
-//    if (file.is_open()) {
-//        file.write(reinterpret_cast<const char *>(image), sizeof(float[N]));
-//    } else {cout << "Error while opening the file : " << filename << endl; }
-//    file.close();
-//}
-//
-//void load(string filename, img image, int N) {
-//    ifstream file;
-//    file.open(filename, ios::in|ios::binary);
-//    float image1[N];
-//    if (!file.is_open()) {
-//        cout << "Error while opening the file : " << filename << endl;
-//    } else {
-//        file.seekg(0);
-//        file.read((char *) &image1, sizeof(float[N]));
-//    }
-//    file.close();
-//    for (int i=0; i<N; i++){ // convert float* to img by transferring values
-//        image[i] = image1[i];
-//    }
-//}
-
-vecf load2(string filename, int N) {
-    vecf image(N);
+vecf load(string filename, int N) {
     ifstream file;
     file.open(filename, ios::in|ios::binary);
-    float temp_img[N];
+    vecf image(N);
     if (!file.is_open()) {
         cout << "Error while opening the file : " << filename << endl;
     } else {
         file.seekg(0);
-        file.read((char *) &temp_img, image.size()*sizeof(float));
+        file.read((char *) &image[0], image.size()*sizeof(float));
     }
     file.close();
-    for (int i=0; i<N; i++){ // convert float* to img by transferring values
-        image[i] = temp_img[i];
-    }
     return image;
 }
 
-void TEST_store_load2(string test_filename) {
+void TEST_store_load(string test_filename) {
     vecf A {1,2,3,4,5,6,7,8,9};
-    store2(test_filename, A);
-    vecf B = load2(test_filename, 9);
+    store(test_filename, A);
+    vecf B = load(test_filename, 9);
     assert (std::equal(std::begin(B), std::end(B), std::begin(A)) == true);
 
 }
-
-//void TEST_store_load(string test_filename) {
-//    float A[] = {1,2,3,4,5,6,7,8,9};
-//    store(test_filename, A, 9);
-//    float B[9];
-//    load(test_filename, B, 9);
-//    assert (std::equal(std::begin(B), std::end(B), std::begin(A)) == true);
-//
-//}
 
 vecf imageProduct(vecf i1, vecf i2, int N) {
     // multiply 2 matrices pixel by pixel
@@ -317,16 +277,15 @@ vecf inverseTransform(vecf T, int N) {
 }
 
 vecf threshold(vecf image, float t, int N) {
-    vecf res(N*N);
     for (int i=0; i<N; i++){
         for (int j=0; j<N; j++){
             float abs_value = abs(image[r(i,j,N)]);
             if (abs_value < t) {
-                res[r(i,j,N)] = 0;
+                image[r(i,j,N)] = 0;
             }
         }
     }
-    return res;
+    return image;
 }
 
 vecf getQtable() {
@@ -363,11 +322,12 @@ vecf inverseQuantization(vecf Qtable, vecf Qcoeffs, int N) {
     return unquantized;
 }
 
-void approximate(vecf A, string A_dct, string A_Qdct, string A_IQdct, string A_IQidct, vecf Qtable, int N, int b) {
+void approximate(vecf A, string f_A_dct, string f_A_Qdct, string f_A_IQdct, string f_A_IQidct, vecf Qtable, int N, int b) {
     // DCT transform + Quantization + inverse quantization + inverse DCT transform
     // b = blocksize
     vecf dct1D = createDCTmatrix(b);
     vecf idct = transposeSquareMatrix(dct1D, b);
+    vecf A_dct(N*N); vecf A_Qdct(N*N); vecf A_IQdct(N*N); vecf A_IQidct(N*N);
 
     for (int i=0; i<N/b; i++) {
         for (int j=0; j<N/b; j++) {
@@ -380,15 +340,16 @@ void approximate(vecf A, string A_dct, string A_Qdct, string A_IQdct, string A_I
             }
             // end of block
             vecf transformed_block = transform(block, b);
-            store2(A_dct, transformed_block);
+            for (int l=0; l < b*b; l++) {A_dct[block_indices[l]] = transformed_block[l];}
             vecf Qdct_block = quantization(Qtable, transformed_block, b);
-            store2(A_Qdct, Qdct_block);
+            for (int l=0; l < b*b; l++) {A_Qdct[block_indices[l]] = Qdct_block[l];}
             vecf IQdct_block = inverseQuantization(Qtable, Qdct_block, b);
-            store2(A_IQdct, IQdct_block);
+            for (int l=0; l < b*b; l++) {A_IQdct[block_indices[l]] = IQdct_block[l];}
             vecf IQidct_block = inverseTransform(IQdct_block, b);
-            store2(A_IQidct, IQidct_block);
+            for (int l=0; l < b*b; l++) {A_IQidct[block_indices[l]] = IQidct_block[l];}
         }
     }
+    store(f_A_dct, A_dct); store(f_A_Qdct, A_Qdct); store(f_A_IQdct, A_IQdct); store(f_A_IQidct, A_IQidct);
 }
 
 vecf encode(vecf A, vecf Qtable, int N, int b) {
@@ -598,11 +559,11 @@ void TEST_store_load_txt(string filename) {
     assert((std::equal(std::begin(B), std::end(B), std::begin(A)) == true));
 }
 
-vector<int> zigzagPattern(int N) {
+veci zigzagPattern(int N) {
     // get the indices of the zigzag pattern of an N*N image
-    vector<int> seq(N*N);
+    veci seq(N*N);
     for (int i=0; i<N*N; i++){seq[i] = i;}
-    vector<int> res;
+    veci res;
     vector<vector<float>> sol(N+N-1);
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
@@ -623,22 +584,22 @@ vector<int> zigzagPattern(int N) {
 }
 
 void TEST_zigzagPattern() {
-    vector<int> Z = zigzagPattern(3);
-    vector<int> res {0,1,3,6,4,2,5,7,8};
+    veci Z = zigzagPattern(3);
+    veci res {0,1,3,6,4,2,5,7,8};
     assert((std::equal(std::begin(Z), std::end(Z), std::begin(res)) == true));
 }
 
 vecf zigzag(vecf A, int N) {
     // get the zigzag pattern of an image
     vecf res(N*N);
-    vector<int> zigzag_pattern = zigzagPattern(N);
+    veci zigzag_pattern = zigzagPattern(N);
     for (int i=0; i<N*N; i++) {
         res[i] = A[zigzag_pattern[i]];
     }
     return res;
 }
 
-vecf inverseZigzag(vecf zigzag, vector<int> zigzag_pattern, int N) {
+vecf inverseZigzag(vecf zigzag, veci zigzag_pattern, int N) {
     // invert the zigzag pattern to get back the interleaved image
     vecf res(N*N);
     for (int i=0; i<N*N; i++) {
@@ -647,9 +608,9 @@ vecf inverseZigzag(vecf zigzag, vector<int> zigzag_pattern, int N) {
     return res;
 }
 
-vector<int> getDCIndicesFromInterleaved(int b, int N) {
+veci getDCIndicesFromInterleaved(int b, int N) {
     // get the indicces of the DC coefficients from the interleaved pattern image
-    vector<int> indices;
+    veci indices;
     for (int k=0; k<b*b; k++) {
         int DC_index = 0*N*b + 0*b + (k/b)*N + k%b;
         indices.push_back(DC_index);
@@ -658,14 +619,14 @@ vector<int> getDCIndicesFromInterleaved(int b, int N) {
 }
 
 void TEST_getDCIndicesFromInterleaved() {
-    vector<int> A = getDCIndicesFromInterleaved(2, 4);
-    vector<int> B {0,1,4,5};
+    veci A = getDCIndicesFromInterleaved(2, 4);
+    veci B {0,1,4,5};
     assert((std::equal(std::begin(A), std::end(A), std::begin(B)) == true));
 }
 
-vector<int> getDCzigzagPattern(vector<int> DC_indices, vector<int> zigzag_indices, int N) {
+veci getDCzigzagPattern(veci DC_indices, veci zigzag_indices, int N) {
     // get the indices of the DC coefficients from the zigzag pattern
-    vector<int> DC_pattern(N*N, -1); // init with -1 values
+    veci DC_pattern(N*N, -1); // init with -1 values
     for (int i=0; i<N*N; i++) {
         if (std::find(DC_indices.begin(), DC_indices.end(), zigzag_indices[i]) != DC_indices.end()) {
             DC_pattern[i] = zigzag_indices[i];
@@ -675,16 +636,16 @@ vector<int> getDCzigzagPattern(vector<int> DC_indices, vector<int> zigzag_indice
 }
 
 void TEST_getDCzigzagPattern() {
-    vector<int> zig {0, 1, 4, 8, 5, 2, 3, 6, 9, 12, 13, 10, 7, 11, 14, 15};
-    vector<int> DC_indices {0,1,4,5};
-    vector<int> res {0, 1, 4, -1, 5, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-    vector<int> D = getDCzigzagPattern(DC_indices, zig, 4);
+    veci zig {0, 1, 4, 8, 5, 2, 3, 6, 9, 12, 13, 10, 7, 11, 14, 15};
+    veci DC_indices {0,1,4,5};
+    veci res {0, 1, 4, -1, 5, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+    veci D = getDCzigzagPattern(DC_indices, zig, 4);
     assert((std::equal(std::begin(D), std::end(D), std::begin(res)) == true));
 }
 
-vector<int> getACzigzagPattern(vector<int> DC_indices, vector<int> zigzag_indices, int N) {
+veci getACzigzagPattern(veci DC_indices, veci zigzag_indices, int N) {
     // get the indices of the AC coefficients in zigzag pattern
-    vector<int> AC_pattern;
+    veci AC_pattern;
     for (int i=0; i<N*N; i++) {
         bool is_DC = false;
         if (std::find(DC_indices.begin(), DC_indices.end(), zigzag_indices[i]) != DC_indices.end()) {
@@ -698,14 +659,14 @@ vector<int> getACzigzagPattern(vector<int> DC_indices, vector<int> zigzag_indice
 }
 
 void TEST_getACzigzagPattern() {
-    vector<int> zig {0, 1, 4, 8, 5, 2, 3, 6, 9, 12, 13, 10, 7, 11, 14, 15};
-    vector<int> DC_indices {0,1,4,5};
-    vector<int> res {8, 2, 3, 6, 9, 12, 13, 10, 7, 11, 14, 15};
-    vector<int> A = getACzigzagPattern(DC_indices, zig, 4);
+    veci zig {0, 1, 4, 8, 5, 2, 3, 6, 9, 12, 13, 10, 7, 11, 14, 15};
+    veci DC_indices {0,1,4,5};
+    veci res {8, 2, 3, 6, 9, 12, 13, 10, 7, 11, 14, 15};
+    veci A = getACzigzagPattern(DC_indices, zig, 4);
     assert((std::equal(std::begin(A), std::end(A), std::begin(res)) == true));
 }
 
-vecf getBackACDCzigzag(vecf DC_coeffs, vector<int> pattern, vecf AC_coeffs, int b, int N) {
+vecf getBackACDCzigzag(vecf DC_coeffs, veci pattern, vecf AC_coeffs, int b, int N) {
     // get back the interleaved image by combining DC and AC coefficients
     vecf zigzag_pattern (pattern.size());
     veci DC_indices = getDCIndicesFromInterleaved(N/b, N);
@@ -728,10 +689,10 @@ vecf getBackACDCzigzag(vecf DC_coeffs, vector<int> pattern, vecf AC_coeffs, int 
 
 void TEST_getBackACDCzigzag() {
     vecf DC_c{1,2,5,6};
-    vector<int> DC {0, 1, 4, -1, 5, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+    veci DC {0, 1, 4, -1, 5, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
     vecf AC_c {9,3,4,7,10,13,14,11,8,12,15,16};
-    vector<int> AC {8, 2, 3, 6, 9, 12, 13, 10, 7, 11, 14, 15};
-//    vector<int> res {0, 1, 4, 8, 5, 2, 3, 6, 9, 12, 13, 10, 7, 11, 14, 15};
+    veci AC {8, 2, 3, 6, 9, 12, 13, 10, 7, 11, 14, 15};
+//    veci res {0, 1, 4, 8, 5, 2, 3, 6, 9, 12, 13, 10, 7, 11, 14, 15};
     vecf res {1, 2, 5, 9, 6, 3, 4, 7, 10, 13, 14, 11, 8, 12, 15, 16};
     vecf Z = getBackACDCzigzag(DC_c, DC, AC_c, 2, 4);
     assert((std::equal(std::begin(Z), std::end(Z), std::begin(res)) == true));
@@ -740,9 +701,9 @@ void TEST_getBackACDCzigzag() {
 
 vecf getACFromInterleaved(vecf interleaved, int b, int N) {
     // Get the AC coefficients from the interleaved pattern image
-    vector<int> zigzag_pattern = zigzagPattern(N);
-    vector<int> DC_indices = getDCIndicesFromInterleaved(N/b, N);
-    vector<int> AC_pattern = getACzigzagPattern(getDCIndicesFromInterleaved(N/b, N), zigzagPattern(N), N);
+    veci zigzag_pattern = zigzagPattern(N);
+    veci DC_indices = getDCIndicesFromInterleaved(N/b, N);
+    veci AC_pattern = getACzigzagPattern(getDCIndicesFromInterleaved(N/b, N), zigzagPattern(N), N);
     int nb_AC = N*N - (N/b)*(N/b);
     vecf AC_coeffs(nb_AC);
     for (int i=0; i<nb_AC; i++) {
@@ -885,7 +846,7 @@ vecf decodeRLE(vecf2 encodedRLE, vecf DC_coeffs, int N, int b) {
     // Takes a run length Encoding and decode into an image
     vecf AC_coeffs = runLengthDecoding(encodedRLE);
     vecf deltaDecodedDC = deltaDecoding(DC_coeffs, N/b); // DC coefficients after delta decoding
-    vector<int> DC_pattern = getDCzigzagPattern(getDCIndicesFromInterleaved(N/b, N), zigzagPattern(N), N);
+    veci DC_pattern = getDCzigzagPattern(getDCIndicesFromInterleaved(N/b, N), zigzagPattern(N), N);
 
     vecf zigzagACDC = getBackACDCzigzag(deltaDecodedDC, DC_pattern, AC_coeffs, b,N); // zigzag with AC + DC coeffs
 
@@ -1148,10 +1109,9 @@ string generateBitStreamDC(vecf image, int N) {
     return bitstream;
 }
 
-string compress(string fileDC, string fileAC, vecf image, int N, int b) {
+string compress(string fileDC, string fileAC, img deltaEncodedDC, vecf image, int N, int b) {
     // compress an image into a bitstream (delta encoding + Golomb for DC coefficients and
     // Run length encoding + Variable Length encoding (Golomb) for AC coefficients)
-    float deltaEncodedDC[(N/b)*(N/b)];
     vecf2 encodedRLE = encodeRLE(image, deltaEncodedDC, N, b);
     vecf DC_coeffs((N/b)*(N/b));
     for (unsigned int i=0; i<DC_coeffs.size(); i++) {DC_coeffs[i] = deltaEncodedDC[i];}
