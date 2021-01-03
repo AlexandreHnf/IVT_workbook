@@ -86,44 +86,33 @@ typedef vector<vector<float>> vecf2;
 
 void ex2_2() {
     cout << "----- 2.2" << endl;
-    img256 img_cos_pattern;
-    generateCosPatternImage(img_cos_pattern, 256);
+    vecf img_cos_pattern = generateCosPatternImage(256);
     //displayImage(img_cos_pattern, "cos pattern img created : ");
-    store(FILE_COS_PATTERN, img_cos_pattern, 256*256);
+    store2(FILE_COS_PATTERN, img_cos_pattern);
 }
 
 void ex3_3() {
     cout << "----- 3.3" << endl;
-    img256 lena;
-    load(FILE_LENA, lena, 256*256);
-    //displayImage(lena, "Lena raw loaded : ");
 
-    img256 img_cos_pattern;
-    generateCosPatternImage(img_cos_pattern, 256);
-    img256 modified_lena;
-    load(FILE_LENA, modified_lena, 256*256);
-    imageProduct(modified_lena, img_cos_pattern, 256);
-    //displayImage(modified_lena, "Lena raw with cosine pattern : ");
+    vecf img_cos_pattern = generateCosPatternImage(256);
+    vecf lena = load2(FILE_LENA, 256*256);
+    vecf cos_lena = imageProduct(lena, img_cos_pattern, 256);
     // Store modified lena
-    store(FILE_COS_PATTERN_LENA, modified_lena, 256*256);
+    store2(FILE_COS_PATTERN_LENA, cos_lena);
 }
 
 void ex3_4() {
     cout << "----- 3.4" << endl;
-    img256 lena;
-    load(FILE_LENA, lena, 256*256);
-    img256 modified_lena;
-    load(FILE_COS_PATTERN_LENA, modified_lena, 256*256);
-    float MSE = mse(lena, modified_lena, 256);
+    vecf lena = load2(FILE_LENA, 256*256);
+    vecf cos_lena = load2(FILE_COS_PATTERN_LENA, 256*256);
+    float MSE = mse(lena, cos_lena, 256);
     cout << "MSE : " << MSE << endl;
 }
 
 void ex3_5() {
     cout << "----- 3.5" << endl;
-    img256 lena;
-    load(FILE_LENA, lena, 256*256);
-    img256 modified_lena;
-    load(FILE_COS_PATTERN_LENA, modified_lena, 256*256);
+    vecf lena = load2(FILE_LENA, 256*256);
+    vecf modified_lena = load2(FILE_COS_PATTERN_LENA, 256*256);
     float PSNR = psnr(lena, modified_lena, 255, 256);
     cout << "PSNR :" << PSNR << endl;
 }
@@ -151,78 +140,63 @@ void session1() {
 
 void ex4_1() {
     cout << "----- 4.1" << endl;
-    img256 uniform_image;
     // generate image with uniform distribution
-    generateUDRN(uniform_image, -0.5, 0.5, 256);
-    store(FILE_UNIFORM, uniform_image, 256*256);
+    vecf uniform_image = generateUDRN(-0.5, 0.5, 256);
+    store2(FILE_UNIFORM, uniform_image);
     // what is the expected MSE of the random image, compared to the expected mean 0
-    img256 zero_image;
-    generateZeroImage(zero_image, 256);
-    float uniform_mse = mse(uniform_image, zero_image, 256);
+    vecf zero_img(256*256, 0);
+    float uniform_mse = mse(uniform_image, zero_img, 256);
     cout << "uniform MSE : " << uniform_mse << endl;
 }
 
 void ex4_2() {
     cout << "----- 4.2" << endl;
-    img256 gaussian_image;
     // generate image with gaussian distribution
-    generateGDRN(gaussian_image, 0.0, sqrt(0.0830861), 256);
-    store(FILE_GAUSSIAN, gaussian_image, 256*256);
+    vecf gaussian_image = generateGDRN(0.0, sqrt(0.0830861), 256);
+    store2(FILE_GAUSSIAN, gaussian_image);
     // what is the expected MSE of the random image, compared to the expected mean 0
-    img256 zero_image;
-    generateZeroImage(zero_image, 256);
-    float gaussian_mse = mse(gaussian_image, zero_image, 256);
+    vecf zero_img(256*256, 0);
+    float gaussian_mse = mse(gaussian_image, zero_img, 256);
     cout << "gaussian MSE : " << gaussian_mse << endl;
 }
 
 void ex4_4() {
     cout << "----- 4.4" << endl;
-    img256 uniform_image;
-    load(FILE_UNIFORM, uniform_image, 256*256);
-    img256 uniform_lena;
-    load(FILE_LENA, uniform_lena, 256*256);
-    imageAddition(uniform_lena, uniform_image, 256); // change to "add function"
-    store(FILE_UNIFORM_LENA, uniform_lena, 256*256);
+    vecf uniform_image = load2(FILE_UNIFORM, 256*256);
+    vecf uniform_lena = load2(FILE_LENA, 256*256);
+    imageAddition(uniform_lena, uniform_image, 256);
+    store2(FILE_UNIFORM_LENA, uniform_lena);
 
-    img256 gaussian_image;
-    load(FILE_GAUSSIAN, gaussian_image, 256*256);
-    img256 gaussian_lena;
-    load(FILE_LENA, gaussian_lena, 256*256);
-    imageAddition(gaussian_lena, gaussian_image, 256); // change to "add function"
-    store(FILE_GAUSSIAN_LENA, gaussian_lena, 256*256);
+    vecf gaussian_image = load2(FILE_GAUSSIAN, 256*256);
+    vecf gaussian_lena = load2(FILE_LENA, 256*256);
+    imageAddition(gaussian_lena, gaussian_image, 256);
+    store2(FILE_GAUSSIAN_LENA, gaussian_lena);
 }
 
 void ex5_1() {
     cout << "----- 5.1" << endl;
-    img256 original_lena;
-    load(FILE_LENA, original_lena, 256*256);
-    img256 blurry_lena;
-    load(FILE_BLURRY_LENA, blurry_lena, 256*256);
+    vecf original_lena = load2(FILE_LENA, 256*256);
+    vecf blurry_lena = load2(FILE_BLURRY_LENA, 256*256);
     float blurry_lena_mse = mse(blurry_lena, original_lena, 256);
     cout << "MSE blurry lena: " << blurry_lena_mse << endl;
 }
 
 void ex5_2() {
     cout << "----- 5.2" << endl;
-    img256 high_gaussian_image;
-    generateGDRN(high_gaussian_image, 0.0, 10, 256); // gaussian image with high variance
-    img256 gaussian_lena;
-    load(FILE_BLURRY_LENA, gaussian_lena, 256*256);
+    vecf high_gaussian_image = generateGDRN(0.0, 10, 256); // gaussian image with high variance
+    vecf gaussian_lena = load2(FILE_BLURRY_LENA, 256*256);
     imageAddition(gaussian_lena, high_gaussian_image, 256); // blurry lena + high variance gaussian
-    store(FILE_GAUSSIAN_BLURRY_LENA_5_2, gaussian_lena, 256*256);
+    store2(FILE_GAUSSIAN_BLURRY_LENA_5_2, gaussian_lena);
 }
 
 void ex5_3(float sigma, string filename) {
     cout << "----- 5.3" << endl;
-    img256 gaussian_image;
-    generateGDRN(gaussian_image, 0.0, sigma, 256); // gaussian image with variance = mse blurry lena
-    img256 gaussian_lena;
-    load(FILE_LENA, gaussian_lena, 256*256);
+    vecf gaussian_image = generateGDRN(0.0, sigma, 256); // gaussian image with variance = mse blurry lena
+    vecf gaussian_lena = load2(FILE_LENA, 256*256);
     imageAddition(gaussian_lena, gaussian_image, 256); // Lena + gaussian
-    store(filename, gaussian_lena, 256*256);
+    store2(filename, gaussian_lena);
 
-    img256 original_lena;
-    load(FILE_LENA, original_lena, 256*256);
+    vecf original_lena = load2(FILE_LENA, 256*256);
     float gaussian_lena_mse = mse(gaussian_lena, original_lena, 256);
     cout << "MSE gaussian lena with same mse than blurry lena : " << gaussian_lena_mse << endl;
 }
@@ -230,10 +204,8 @@ void ex5_3(float sigma, string filename) {
 void ex5_4(string other_gaussian_file, float sigma) {
     cout << "----- 5.4" << endl;
 
-    img256 gaussian_lena3;
-    load(FILE_GAUSSIAN_LENA_5_3, gaussian_lena3, 256*256);
-    img256 blurry_gaussian_lena3;
-    load(other_gaussian_file, blurry_gaussian_lena3, 256*256);
+    vecf gaussian_lena3 = load2(FILE_GAUSSIAN_LENA_5_3, 256*256);
+    vecf blurry_gaussian_lena3 = load2(other_gaussian_file, 256*256);
     float blurry_gaussian3_mse = mse(blurry_gaussian_lena3, gaussian_lena3, 256);
     cout << "MSE 5.4 sigma = " << sigma << ": " << blurry_gaussian3_mse << endl;
 }
@@ -273,16 +245,14 @@ void session2() {
 
 void ex6_1() {
     cout << "----- 6.1" << endl;
-    img256 dct_mat;
-    createDCTmatrix(dct_mat, 256);
-    store(FILE_DCT_MATRIX, dct_mat, 256*256);
+    vecf dct_mat = createDCTmatrix(256);
+    store2(FILE_DCT_MATRIX, dct_mat);
 
 }
 
 void ex6_2() {
     cout << "----- 6.2" << endl;
-    img256 dct_mat;
-    createDCTmatrix(dct_mat, 256);
+    vecf dct_mat = createDCTmatrix(256);
     float DC_coefficient = dct_mat[0];
     for (int i=0; i<256; i++){ // all elements of the basic vector of the DC coefficient
         if (dct_mat[i] != DC_coefficient) {
@@ -296,53 +266,42 @@ void ex6_2() {
 void ex6_3() {
     cout << "----- 6.3" << endl;
     // Check that the matrix is orthonormal :
-    img256 dct;
-    createDCTmatrix(dct, 256);
-    img256 idct; // IDCT
-    createIDCTmatrix(idct, 256);
+    vecf dct = createDCTmatrix(256);
+    vecf idct = createIDCTmatrix(256);
     bool iso = isOrthonormal(idct, dct, 256);
     cout << "is orthogonal ? " << iso << endl;
 }
 
 void ex7_1() {
     cout << "----- 7.1" << endl;
-    img256 original_lena;
-    load(FILE_LENA, original_lena, 256*256);
-    img256 res;
-    transform(original_lena, res, 256);
-    store(FILE_DCT_LENA, res, 256*256);
+    vecf original_lena = load2(FILE_LENA, 256*256);
+    vecf res = transform(original_lena, 256);
+    store2(FILE_DCT_LENA, res);
 }
 
 void ex7_2() {
     cout << "----- 7.2" << endl;
-    img256 dct_lena;
-    load(FILE_DCT_LENA, dct_lena, 256*256);
-    threshold(dct_lena, 10, 256);
-    store(FILE_THRESHOLD_DCT_LENA, dct_lena, 256*256);
+    vecf dct_lena = load2(FILE_DCT_LENA, 256*256);
+    vecf threshold_lena = threshold(dct_lena, 10, 256);
+    store2(FILE_THRESHOLD_DCT_LENA, threshold_lena);
 }
 
 void ex7_3_1() {
     cout << "----- 7.3.1" << endl;
-    img256 lena;
-    load(FILE_LENA, lena, 256*256);
-    img256 transformed;
-    transform(lena, transformed, 256);
-    img256 reconstructed;
-    inverseTransform(transformed, reconstructed, 256);
-    store(FILE_RECONSTRUCTED_DCT_LENA, reconstructed, 256*256);
+    vecf lena = load2(FILE_LENA, 256*256);
+    vecf transformed = transform(lena, 256);
+    vecf reconstructed = inverseTransform(transformed, 256);
+    store2(FILE_RECONSTRUCTED_DCT_LENA, reconstructed);
 }
 
 void ex7_3_thresh(string filename, float t) {
-    img256 lena;
-    load(FILE_LENA, lena, 256*256);
-    img256 transformed;
-    transform(lena, transformed, 256);
-    threshold(transformed, t, 256);
-    img256 reconstructed;
-    inverseTransform(transformed, reconstructed, 256);
+    vecf lena = load2(FILE_LENA, 256*256);
+    vecf transformed = transform(lena, 256);
+    vecf transformed_thresh = threshold(transformed, t, 256);
+    vecf reconstructed = inverseTransform(transformed_thresh, 256);
     float psnr_val = psnr(reconstructed, lena, 255, 256);
     cout << "PSNR reconstructed lena with threshold " << t << " : " << psnr_val << endl;
-    store(filename, reconstructed, 256*256);
+    store2(filename, reconstructed);
 }
 
 void ex7_3_2() {
@@ -385,82 +344,59 @@ void session3() {
 
 void ex8_1() {
     cout << "----- 8.1" << endl;
-    img8 Qtable;
-    getQtable(Qtable, 8);
-    store(FILE_QUANTIZATION, Qtable, 8*8);
+    vecf Qtable = getQtable();
+    store2(FILE_QUANTIZATION, Qtable);
 }
 
 void ex8_2() {
     cout << "----- 8.2" << endl;
-    img256 lena;
-    load(FILE_LENA, lena, 256*256);
-    img256 lena_dct;
-    img256 lena_Qdct;
-    img256 lena_IQdct;
-    img256 lena_IQidct;
-    img8 Qtable;
-    getQtable(Qtable, 8);
-    approximate(lena, lena_dct, lena_Qdct, lena_IQdct, lena_IQidct, Qtable, 256, 8);
-    store(FILE_DCT_8_2, lena_dct, 256*256);
-    store(FILE_QDCT_8_2, lena_Qdct, 256*256);
-    store(FILE_IQDCT_8_2, lena_IQdct, 256*256);
-    store(FILE_IQIDCT_8_2, lena_IQidct, 256*256);
+    vecf lena = load2(FILE_LENA, 256*256);
+    vecf Qtable = getQtable();
+    approximate(lena, FILE_DCT_8_2, FILE_QDCT_8_2, FILE_IQDCT_8_2, FILE_IQIDCT_8_2, Qtable, 256, 8);
 }
 
 void ex8_3() {
     cout << "----- 8.3" << endl;
-    img256 lena;
-    load(FILE_LENA, lena, 256*256);
-    clip(FILE_8BPP_LENA, lena, 256);
+    vecf lena = load2(FILE_LENA, 256*256);
+    clip2(FILE_8BPP_LENA, lena, 256);
 }
 
 void ex8_4() {
     cout << "----- 8.4" << endl;
-    img256 approximated_lena;
-    load(FILE_IQIDCT_8_2, approximated_lena, 256*256);
-    clip(FILE_IQIDCT_8_2_8bpp, approximated_lena, 256);
+    vecf approximated_lena = load2(FILE_IQIDCT_8_2, 256*256);
+    clip2(FILE_IQIDCT_8_2_8bpp, approximated_lena, 256);
 }
 
 void ex8_5() {
     cout << "----- 8.5" << endl;
-    img256 lena;
-    load(FILE_LENA, lena, 256*256);
-    img256 encoded_lena;
-    img256 decoded_lena;
-    img8 Qtable;
-    getQtable(Qtable, 8);
+    vecf lena = load2(FILE_LENA, 256*256);
+    vecf Qtable = getQtable();
 
-    encode(lena, encoded_lena, Qtable, 256, 8);
-    store(FILE_ENCODED_LENA8_5, encoded_lena, 256*256);
-    decode(encoded_lena, decoded_lena, Qtable, 256, 8);
-    store(FILE_DECODED_LENA8_5, decoded_lena, 256*256);
+    vecf encoded_lena = encode(lena, Qtable, 256, 8);
+    store2(FILE_ENCODED_LENA8_5, encoded_lena);
+    vecf decoded_lena = decode(encoded_lena, Qtable, 256, 8);
+    store2(FILE_DECODED_LENA8_5, decoded_lena);
 }
 
 void ex9_1_1() {
     cout << "----- 9.1.1" << endl;
-    img256 lena;
-    load(FILE_LENA, lena, 256*256);
-    img256 contiguous_dct_lena;
-    img8 Qtable;
-    getQtable(Qtable, 8);
+    vecf lena = load2(FILE_LENA, 256*256);
+    vecf Qtable = getQtable();
 
-    encode(lena, contiguous_dct_lena, Qtable, 256, 8);
-    store(FILE_INTERLEAVED_9, contiguous_dct_lena, 256*256);
+    vecf contiguous_dct_lena = encode(lena, Qtable, 256, 8);
+    store2(FILE_INTERLEAVED_9, contiguous_dct_lena);
 }
 
 void ex9_1_2() {
     cout << "----- 9.1.2" << endl;
     // transformm a 256x256 pixels layout with 32x32 grid of 8x8 contiguous DCT coefs :
-    img256 contiguous_dct_lena;
-    load(FILE_DCT_8_2, contiguous_dct_lena, 256*256);
-    img256 interleaved_dct_lena;
-    interleavedLayout(contiguous_dct_lena, interleaved_dct_lena, 8, 256);
-    store(FILE_INTERLEAVED_9, interleaved_dct_lena, 256*256);
+    vecf contiguous_dct_lena = load2(FILE_DCT_8_2, 256*256);
+    vecf interleaved_dct_lena = interleavedLayout(contiguous_dct_lena, 8, 256);
+    store2(FILE_INTERLEAVED_9, interleaved_dct_lena);
 
     // inverse interleave :
-    img256 inv_interleaved;
-    interleavedLayout(interleaved_dct_lena, inv_interleaved, 32, 256);
-    store(FILE_INV_INTERLEAVED_9, inv_interleaved, 256*256);
+    vecf inv_interleaved = interleavedLayout(interleaved_dct_lena, 32, 256);
+    store2(FILE_INV_INTERLEAVED_9, inv_interleaved);
 }
 
 
@@ -496,40 +432,32 @@ void session4() {
 void ex10_1() {
     cout << "----- 10.1" << endl;
     // create a 32x32 pixels image from quantized DC terms of each 8x8 pixels block
-    img256 quantized_DC;
-    load(FILE_QDCT_8_2, quantized_DC, 256*256);
-    img32 res;
-    quantizedDCtermsMat(quantized_DC, res, 8, 256);
-    store(FILE_32_QDCT, res, 32*32);
+    vecf quantized_DC = load2(FILE_QDCT_8_2, 256*256);
+    vecf res = quantizedDCtermsMat(quantized_DC, 8, 256);
+    store2(FILE_32_QDCT, res);
 }
 
 void ex10_2() {
     cout << "----- 10.2" << endl;
-    img32 QDCTmat;
-    load(FILE_32_QDCT, QDCTmat, 32*32);
-    deltaEncoding(QDCTmat, 32);
-    storeTXTmatrix(FILE_DELTA_DC_TXT, QDCTmat, 32*32);
+    vecf QDCTmat = load2(FILE_32_QDCT, 32*32);
+    vecf deltaQDCTmat = deltaEncoding(QDCTmat, 32);
+    storeTXTmatrix(FILE_DELTA_DC_TXT, deltaQDCTmat, 32*32);
 }
 
 void ex10_3() {
     cout << "----- 10.3" << endl;
-    img32 delta_QDCterms;
-    loadTXTmatrix(FILE_DELTA_DC_TXT, delta_QDCterms, 32*32);
-    deltaDecoding(delta_QDCterms, 32);
-    store(FILE_RECONSTRUCTED_DELTA, delta_QDCterms, 32*32);
+    vecf delta_QDCterms = loadTXTmatrix(FILE_DELTA_DC_TXT, 32*32);
+    vecf deltaDecodedQDCT = deltaDecoding(delta_QDCterms, 32);
+    store2(FILE_RECONSTRUCTED_DELTA, deltaDecodedQDCT);
 }
 
 void ex11_1() {
     cout << "----- 11.1" << endl;
-    img256 lena;
-    load(FILE_LENA, lena, 256*256);
-    img256 contiguous_qdct_lena;
-    img8 Qtable;
-    getQtable(Qtable, 8);
-    encode(lena, contiguous_qdct_lena, Qtable, 256, 8);
+    vecf lena = load2(FILE_LENA, 256*256);
+    vecf Qtable = getQtable();
+    vecf contiguous_qdct_lena = encode(lena, Qtable, 256, 8);
 
-    img256 interleaved_qdct_lena;
-    interleavedLayout(contiguous_qdct_lena, interleaved_qdct_lena, 8, 256);
+    vecf interleaved_qdct_lena = interleavedLayout(contiguous_qdct_lena, 8, 256);
     veci zigzag_pattern = zigzagPattern(256);
     veci DC_indices = getDCIndicesFromInterleaved(32, 256);
     cout << "nb of DC : " << DC_indices.size() << endl;
@@ -540,8 +468,7 @@ void ex11_1() {
 
 vecf2 ex11_2() {
     cout << "----- 11.2" << endl;
-    img256 lena;
-    load(FILE_LENA, lena, 256*256);
+    vecf lena = load2(FILE_LENA, 256*256);
     img32 encodedDC;
     vecf2 encodedRLE = encodeRLE(lena, encodedDC, 256, 8);
     // showRunLengths(encodedRLE);
@@ -551,51 +478,41 @@ vecf2 ex11_2() {
 
 void ex11_3() {
     cout << "----- 11.3" << endl;
-    img256 lena;
-    load(FILE_LENA, lena, 256*256);
+    vecf lena = load2(FILE_LENA, 256*256);
     img32 encodedDC;
     vecf2 encodedRLE = encodeRLE(lena, encodedDC, 256, 8);
-    img32 deltaEncodedDC;
-    loadTXTmatrix(FILE_DELTA_DC_TXT, deltaEncodedDC, 32*32);
+    vecf deltaEncodedDC = loadTXTmatrix(FILE_DELTA_DC_TXT, 32*32);
 
-    img256 decoded;
-    decodeRLE(encodedRLE, decoded, deltaEncodedDC, 256, 8);
-    store(FILE_DECODED_11_3, decoded, 256*256);
+    vecf decoded = decodeRLE(encodedRLE, deltaEncodedDC, 256, 8);
+    store2(FILE_DECODED_11_3, decoded);
 }
 
 void ex12_1() {
     cout << "----- 12.1" << endl;
-    img256 lena;
-    load(FILE_LENA, lena, 256*256);
+    vecf lena = load2(FILE_LENA, 256*256);
     img32 encodedDC;
     vecf2 encodedRLE = encodeRLE(lena, encodedDC, 256, 8);
     vecf P = occurences(encodedRLE);
     int N = P.size();
-    float to_store[N];
-    for (int i=0; i<N; i++) {to_store[i] = P[i];}
-    storeTXTmatrix(FILE_12_2_OCC, to_store, N);
+    storeTXTmatrix(FILE_12_2_OCC, P, N);
     cout << "longuest run length N produced : " << P.size()-1 << endl;
     cout << "nb of runs M necessary :" << encodedRLE.size() << endl;
 }
 
 void ex12_2() {
     cout << "----- 12.2" << endl;
-    img256 lena;
-    load(FILE_LENA, lena, 256*256);
+    vecf lena = load2(FILE_LENA, 256*256);
     img32 encodedDC;
     vecf2 encodedRLE = encodeRLE(lena, encodedDC, 256, 8);
     vecf P = occurences(encodedRLE);
     vecf normalized_encoded = normalizeOccurences(P);
     int N = normalized_encoded.size();
-    float norm[N];
-    for (int i=0; i<N; i++) {norm[i] = normalized_encoded[i];}
-    storeTXTmatrix(FILE_12_2_NORMALIZED, norm, N);
+    storeTXTmatrix(FILE_12_2_NORMALIZED, normalized_encoded, N);
 }
 
 void ex12_3() {
     cout << "----- 12.3" << endl;
-    img256 lena;
-    load(FILE_LENA, lena, 256*256);
+    vecf lena = load2(FILE_LENA, 256*256);
     img32 encodedDC;
     vecf2 encodedRLE = encodeRLE(lena, encodedDC, 256, 8);
     vecf P = occurences(encodedRLE);
@@ -646,25 +563,21 @@ void session5() {
 void ex14_1() {
     cout << "----- 14.1" << endl;
 
-    img256 lena;
-    load(FILE_LENA, lena, 256*256);
+    vecf lena = load2(FILE_LENA, 256*256);
     compress(FILE_BITSTREAM_DC_14_1, FILE_BITSTREAM_AC_14_1, lena, 256, 8);
 }
 
 void ex14_2() {
     cout << "----- 14.2" << endl;
     string compressed_bitstream = loadBitstream(FILE_BITSTREAM_AC_14_1);
-    img32 deltaEncodedDC;
-    loadTXTmatrix(FILE_DELTA_DC_14_1, deltaEncodedDC, 32*32);
+    vecf deltaEncodedDC = loadTXTmatrix(FILE_DELTA_DC_14_1, 32*32);
     string bitstream_DC = loadBitstream(FILE_BITSTREAM_DC_14_1);
-    img32 deltaEncodedDC2;
-    bitstreamDCToDelta(bitstream_DC, deltaEncodedDC2);
+    vecf deltaEncodedDC2 = bitstreamDCToDelta(bitstream_DC);
 //    assert((std::equal(std::begin(deltaEncodedDC), std::end(deltaEncodedDC), std::begin(deltaEncodedDC2)) == true));
 
-    img256 decompressed_lena;
-    decompress(FILE_BITSTREAM_DC_14_1, FILE_BITSTREAM_AC_14_1, decompressed_lena, 256, 8);
-    store(FILE_DECOMPRESSED_LENA_14_2, decompressed_lena, 256*256);
-    clip(FILE_CLIP_14_2, decompressed_lena, 256);
+    vecf decompressed_lena = decompress(FILE_BITSTREAM_DC_14_1, FILE_BITSTREAM_AC_14_1, 256, 8);
+    store2(FILE_DECOMPRESSED_LENA_14_2, decompressed_lena);
+    clip2(FILE_CLIP_14_2, decompressed_lena, 256);
 }
 
 void session6() {
@@ -685,7 +598,7 @@ void session6() {
 void testing() {
     cout << "----- starting tests " << endl;
     int i = 0;
-    TEST_store_load(TEST_LOAD_STORE); i++;
+    TEST_store_load2(TEST_LOAD_STORE); i++;
     TEST_imageProduct(); i++;
     TEST_imageAddition(); i++;
     TEST_mse(); i++;

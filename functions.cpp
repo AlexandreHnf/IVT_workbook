@@ -18,7 +18,6 @@ typedef vector<int> veci;
 
 
 float I(int x, int y) {
-
     return 0.5 + 0.5*cos(y*PI/32.0) * cos(x*PI/64.0);
 }
 
@@ -27,26 +26,20 @@ int r(int i, int j, int N) {
     return i*N+j;
 }
 
-void generateCosPatternImage(img image, int N) {
+vecf generateCosPatternImage(int N) {
     // Generate a 256x256 pixels image with cosine pattern SESSION 1 : ex 2.1
+    vecf image(N*N);
     for (int x=0; x<N; x++) {
         for (int y=0; y<N; y++){
             image[r(x,y,N)] = I(x,y);
         }
     }
+    return image;
 }
 
-void generateZeroImage(img image, int N) {
-    // generate a 256x256 pixels image with only 0s
-    for (int x=0; x<N; x++) {
-        for (int y=0; y<N; y++){
-            image[r(x,y,N)] = 0;
-        }
-    }
-}
-
-void generateUDRN(img image, float range_low, float range_high, int N) {
+vecf generateUDRN(float range_low, float range_high, int N) {
     // Generate a 256x256 pixels image with uniform-distributed random numbers
+    vecf image(N*N);
     std::default_random_engine generator;
     std::uniform_real_distribution<float> uniform_distribution(range_low, range_high);
     for (int x=0; x<N; ++x) {
@@ -56,10 +49,12 @@ void generateUDRN(img image, float range_low, float range_high, int N) {
             image[r(x,y,N)] = uniform_distribution(generator);
         }
     }
+    return image;
 }
 
-void generateGDRN(img image, float mean, float stddev, int N) {
+vecf generateGDRN(float mean, float stddev, int N) {
     // Generate a 256x256 pixels image with Gaussian-distributed random numbers [SESSION 2 : 4.2]
+    vecf image(N*N);
     std::default_random_engine generator;
     std::normal_distribution<float> normal_distribution(mean, stddev);
     for (int x=0; x<N; ++x) {
@@ -67,10 +62,11 @@ void generateGDRN(img image, float mean, float stddev, int N) {
             image[r(x,y,N)] = normal_distribution(generator);
         }
     }
+    return image;
 }
 
 
-void displayImage(img image, string name, int N) {
+void displayImage(vecf image, string name, int N) {
     cout << name << endl;
     for (int x=0; x < N; x++ ){
         for (int y=0; y < N; y++) {
@@ -80,75 +76,115 @@ void displayImage(img image, string name, int N) {
     }
 }
 
-void store(string filename, img image, int N) {
+void store2(string filename, vecf image) {
     ofstream file;
     file.open(filename, ios::out | ios::binary);
     if (file.is_open()) {
-        file.write(reinterpret_cast<const char *>(image), sizeof(float[N]));
+        file.write(reinterpret_cast<const char*>(&image[0]), image.size()*sizeof(float));
+//        file.write(reinterpret_cast<const char *>(image), sizeof(float[N]));
     } else {cout << "Error while opening the file : " << filename << endl; }
     file.close();
 }
 
-void load(string filename, img image, int N) {
+//void store(string filename, img image, int N) {
+//    ofstream file;
+//    file.open(filename, ios::out | ios::binary);
+//    if (file.is_open()) {
+//        file.write(reinterpret_cast<const char *>(image), sizeof(float[N]));
+//    } else {cout << "Error while opening the file : " << filename << endl; }
+//    file.close();
+//}
+//
+//void load(string filename, img image, int N) {
+//    ifstream file;
+//    file.open(filename, ios::in|ios::binary);
+//    float image1[N];
+//    if (!file.is_open()) {
+//        cout << "Error while opening the file : " << filename << endl;
+//    } else {
+//        file.seekg(0);
+//        file.read((char *) &image1, sizeof(float[N]));
+//    }
+//    file.close();
+//    for (int i=0; i<N; i++){ // convert float* to img by transferring values
+//        image[i] = image1[i];
+//    }
+//}
+
+vecf load2(string filename, int N) {
+    vecf image(N);
     ifstream file;
     file.open(filename, ios::in|ios::binary);
-    float image1[N];
+    float temp_img[N];
     if (!file.is_open()) {
         cout << "Error while opening the file : " << filename << endl;
     } else {
         file.seekg(0);
-        file.read((char *) &image1, sizeof(float[N]));
+        file.read((char *) &temp_img, image.size()*sizeof(float));
     }
     file.close();
     for (int i=0; i<N; i++){ // convert float* to img by transferring values
-        image[i] = image1[i];
+        image[i] = temp_img[i];
     }
+    return image;
 }
 
-void TEST_store_load(string test_filename) {
-    float A[] = {1,2,3,4,5,6,7,8,9};
-    store(test_filename, A, 9);
-    float B[9];
-    load(test_filename, B, 9);
+void TEST_store_load2(string test_filename) {
+    vecf A {1,2,3,4,5,6,7,8,9};
+    store2(test_filename, A);
+    vecf B = load2(test_filename, 9);
     assert (std::equal(std::begin(B), std::end(B), std::begin(A)) == true);
 
 }
 
-void imageProduct(img i1, img i2, int N) {
+//void TEST_store_load(string test_filename) {
+//    float A[] = {1,2,3,4,5,6,7,8,9};
+//    store(test_filename, A, 9);
+//    float B[9];
+//    load(test_filename, B, 9);
+//    assert (std::equal(std::begin(B), std::end(B), std::begin(A)) == true);
+//
+//}
+
+vecf imageProduct(vecf i1, vecf i2, int N) {
     // multiply 2 matrices pixel by pixel
+    vecf i3(N*N);
     for (int x=0; x<N; x++) {
         for (int y=0; y<N; y++) {
-            i1[r(x,y,N)] = i1[r(x,y,N)] * i2[r(x,y,N)];
+            i3[r(x,y,N)] = i1[r(x,y,N)] * i2[r(x,y,N)];
         }
     }
+    return i3;
 }
 
 void TEST_imageProduct() {
-    float A[] = {1,2,3,4};
-    float B[] = {1,2,3,4};
-    float C[] = {1,4,9,16};
-    imageProduct(A, B, 2);
-    assert (std::equal(std::begin(A), std::end(A), std::begin(C)) == true);
+    vecf A{1,2,3,4};
+    vecf B{1,2,3,4};
+    vecf res{1,4,9,16};
+    vecf C = imageProduct(A, B, 2);
+    assert (std::equal(std::begin(res), std::end(res), std::begin(C)) == true);
 }
 
-void imageAddition(img i1, img i2, int N) {
+vecf imageAddition(vecf i1, vecf i2, int N) {
     // add 2 images pixel by pixel
+    vecf res(N*N);
     for (int x=0; x<N; x++) {
         for (int y=0; y<N; y++) {
-            i1[r(x,y,N)] = i1[r(x,y,N)] + i2[r(x,y,N)];
+            res[r(x,y,N)] = i1[r(x,y,N)] + i2[r(x,y,N)];
         }
     }
+    return res;
 }
 
 void TEST_imageAddition() {
-    float A[] = {1,2,3,4};
-    float B[] = {1,2,3,4};
-    float C[] = {2,4,6,8};
-    imageAddition(A, B, 2);
-    assert (std::equal(std::begin(A), std::end(A), std::begin(C)) == true);
+    vecf A{1,2,3,4};
+    vecf B{1,2,3,4};
+    vecf res{2,4,6,8};
+    vecf C = imageAddition(A, B, 2);
+    assert (std::equal(std::begin(res), std::end(res), std::begin(C)) == true);
 }
 
-float mse(img i1, img i2, int N) {
+float mse(vecf i1, vecf i2, int N) {
     // compute the mean squared error between 2 images // SESSION 1 : ex 3.4
     float mse = 0;
     for (int x=0; x<N; x++ ) {
@@ -160,41 +196,43 @@ float mse(img i1, img i2, int N) {
 }
 
 void TEST_mse() {
-    float A[] = {1,2,3,4};
-    float B[] = {0.5,1,1.5,3};
+    vecf A{1,2,3,4};
+    vecf B{0.5,1,1.5,3};
     float m = mse(A, B, 2);
     assert(m == 1.125);
 }
 
-float psnr(img i1, img i2, int d, int N) {
+float psnr(vecf i1, vecf i2, int d, int N) {
     // compute the PSNR between two images given a MAX value // SESSION 1 : ex 3.5
     return 10.0*log10( pow(d, 2) / mse(i1, i2, N) );
 }
 
 void TEST_psnr() {
-    float A[] = {1,2,3,4};
-    float B[] = {0.5,1,1.5,4};
+    vecf A{1,2,3,4};
+    vecf B{0.5,1,1.5,4};
     float p = psnr(A, B, 255, 2);
     assert(abs(p - 48.7107) <= 0.001);
 }
 
-void transposeSquareMatrix(img m, img transpose, int N) {
+vecf transposeSquareMatrix(vecf m, int N) {
+    vecf t(N*N);
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
-            transpose[r(j,i,N)] = m[r(i,j,N)]; // transpose[j][i] = m[i][j];
+            t[r(j,i,N)] = m[r(i,j,N)]; // transpose[j][i] = m[i][j];
         }
     }
+    return t;
 }
 
 void TEST_transposeSquareMatrix() {
-    float A[] = {1,2,3,4,5,6,7,8,9};
-    float T[] = {1,4,7,2,5,8,3,6,9};
-    float B[9];
-    transposeSquareMatrix(A, B, 3);
+    vecf A{1,2,3,4,5,6,7,8,9};
+    vecf T{1,4,7,2,5,8,3,6,9};
+    vecf B = transposeSquareMatrix(A, 3);
     assert((std::equal(std::begin(B), std::end(B), std::begin(T)) == true));
 }
 
-void squareMatrixMultiplication(img a, img b, img mul, int N) {
+vecf squareMatrixMultiplication(vecf a, vecf b, int N) {
+    vecf mul(N*N);
     for(int i=0;i<N;i++){
         for(int j=0;j<N;j++){
             mul[r(i,j,N)] = 0; // mul[i][j]=0;
@@ -203,18 +241,18 @@ void squareMatrixMultiplication(img a, img b, img mul, int N) {
             }
         }
     }
+    return mul;
 }
 
 void TEST_squareMatrixMultiplication() {
-    float a[9] = {2,4,1,2,3,9,3,1,8};
-    float b[9] = {1,2,3,3,6,1,2,4,7};
-    float c[9] = {16,32,17,29,58,72,22,44,66};
-    float m[9];
-    squareMatrixMultiplication(a,b,m, 3);
+    vecf a{2,4,1,2,3,9,3,1,8};
+    vecf b{1,2,3,3,6,1,2,4,7};
+    vecf c{16,32,17,29,58,72,22,44,66};
+    vecf m = squareMatrixMultiplication(a,b, 3);
     assert((std::equal(std::begin(m), std::end(m), std::begin(c)) == true));
 }
 
-bool isIdentityMatrix(img A, int N) {
+bool isIdentityMatrix(vecf A, int N) {
     for (int i=0; i<N; i++){
         for (int j=0; j<N; j++){
             float val = round(A[r(i,j,N)]);
@@ -227,74 +265,72 @@ bool isIdentityMatrix(img A, int N) {
 }
 
 void TEST_isIdentityMatrix() {
-    float c[3*3] = {1,0,0,0,1,0,0,0,1};
+    vecf c{1,0,0,0,1,0,0,0,1};
     assert(1 == isIdentityMatrix(c, 3));
 }
 
-bool isOrthonormal(img A, img B, int N) {
-    float I[N*N];
-    squareMatrixMultiplication(A, B, I, N); // AAt =?= I
+bool isOrthonormal(vecf A, vecf B, int N) {
+    vecf I = squareMatrixMultiplication(A, B, N); // AAt =?= I
     return isIdentityMatrix(I, N);
 }
 
 void TEST_isOrthonormal() {
-    float A[] = {0,1,0,0,0,1,1,0,0};
-    float B[] = {0,0,1,1,0,0,0,1,0};
+    vecf A{0,1,0,0,0,1,1,0,0};
+    vecf B{0,0,1,1,0,0,0,1,0};
     assert(isOrthonormal(A, B, 3) == true);
 }
 
-void createDCTmatrix(img A, int N) {
+vecf createDCTmatrix(int N) {
+    vecf dct(N*N);
     float ortho_rescaling = sqrt(2.0/N); // to have an orthonormal DCT-II matrix
     for (int k = 0; k < N; k++) { // lines
         for (int n = 0; n < N; n++) { // columns
-            A[r(k,n,N)] = ortho_rescaling*cos( ((M_PI*k)/(2.0*N)) * (2.0*n+1));
-            if (k == 0) {A[r(k,n,N)] = A[r(k,n,N)]*(1.0/sqrt(2));}
+            dct[r(k,n,N)] = ortho_rescaling*cos( ((M_PI*k)/(2.0*N)) * (2.0*n+1));
+            if (k == 0) {dct[r(k,n,N)] = dct[r(k,n,N)]*(1.0/sqrt(2));}
         }
     }
+    return dct;
 }
 
-void createIDCTmatrix(img idct, int N) {
-    float dct[N*N];
-    createDCTmatrix(dct, N);
-    transposeSquareMatrix(dct, idct, N);
+vecf createIDCTmatrix(int N) {
+    vecf dct = createDCTmatrix(N);
+    vecf idct = transposeSquareMatrix(dct, N);
+    return idct;
 }
 
-void transform(img X, img res, int N) {
-    float A[N*N];
-    createDCTmatrix(A, N);
-    float Xt[N*N];
-    transposeSquareMatrix(X, Xt, N);
-    float AXt[N*N];
-    squareMatrixMultiplication(A, Xt, AXt, N);
-    float AXtt[N*N];
-    transposeSquareMatrix(AXt, AXtt, N);
-    squareMatrixMultiplication(A, AXtt, res, N);
+vecf transform(vecf X, int N) {
+    vecf A = createDCTmatrix(N);
+    vecf Xt = transposeSquareMatrix(X, N);
+    vecf AXt = squareMatrixMultiplication(A, Xt, N);
+    vecf AXtt = transposeSquareMatrix(AXt, N);
+    vecf res = squareMatrixMultiplication(A, AXtt, N);
+    return res;
 }
 
-void inverseTransform(img T, img reconstructed, int N) {
-    float A[N*N]; // DCT
-    createDCTmatrix(A, N);
-    float At[N*N]; // IDCT
-    transposeSquareMatrix(A, At, N);
-    float AXtt[N*N];
-    squareMatrixMultiplication(At, T, AXtt, N); // AXtt
+vecf inverseTransform(vecf T, int N) {
+    vecf A = createDCTmatrix(N);
+    vecf At = transposeSquareMatrix(A, N);
+    vecf AXtt = squareMatrixMultiplication(At, T, N); // AXtt
 //    float Xt[N*N];
-    squareMatrixMultiplication(AXtt, A, reconstructed, N);
+    vecf reconstructed = squareMatrixMultiplication(AXtt, A, N);
+    return reconstructed;
 }
 
-void threshold(img image, float t, int N) {
+vecf threshold(vecf image, float t, int N) {
+    vecf res(N*N);
     for (int i=0; i<N; i++){
         for (int j=0; j<N; j++){
             float abs_value = abs(image[r(i,j,N)]);
             if (abs_value < t) {
-                image[r(i,j,N)] = 0;
+                res[r(i,j,N)] = 0;
             }
         }
     }
+    return res;
 }
 
-void getQtable(img Qtable, int N) {
-    float values[] = {16,11,10,16,24,40,51,61,
+vecf getQtable() {
+    vecf Qtable {16,11,10,16,24,40,51,61,
                  12,12,14,19,26,58,60,55,
                  14,13,16,24,40,57,69,56,
                  14,17,22,29,51,87,80,62,
@@ -302,115 +338,132 @@ void getQtable(img Qtable, int N) {
                  24,35,55,64,81,104,113,92,
                  49,64,78,87,103,121,120,101,
                  72,92,95,98,112,100,103,99};
-    for(int k=0; k<N*N; k++) {
-        Qtable[k] = values[k];
-    }
+    return Qtable;
 }
 
-void quantization(img Qtable, img dct_coeffs, img quantized, int N) {
+vecf quantization(vecf Qtable, vecf dct_coeffs, int N) {
+    vecf quantized(N*N);
     for (int i=0; i<N; i++) {
         for (int j = 0; j < N; j++) {
             float B = round(dct_coeffs[r(i,j,N)] / Qtable[r(i,j,N)]);
             quantized[r(i,j,N)] = B;
         }
     }
+    return quantized;
 }
 
-void inverseQuantization(img Qtable, img Qcoeffs, img unquantized, int N) {
+vecf inverseQuantization(vecf Qtable, vecf Qcoeffs, int N) {
+    vecf unquantized(N*N);
     for (int i=0; i<N; i++) {
         for (int j = 0; j < N; j++) {
             float B = Qcoeffs[r(i,j,N)] * Qtable[r(i,j,N)];
             unquantized[r(i,j,N)] = B;
         }
     }
+    return unquantized;
 }
 
-void approximate(img A, img A_dct, img A_Qdct, img A_IQdct, img A_IQidct, img Qtable, int N, int b) {
+void approximate(vecf A, string A_dct, string A_Qdct, string A_IQdct, string A_IQidct, vecf Qtable, int N, int b) {
     // DCT transform + Quantization + inverse quantization + inverse DCT transform
     // b = blocksize
-    float dct1D[b*b]; // DCT matrix
-    createDCTmatrix(dct1D, 8);
-    float idct[b*b];  // IDCT matrix
-    transposeSquareMatrix(dct1D, idct, 8);
+    vecf dct1D = createDCTmatrix(b);
+    vecf idct = transposeSquareMatrix(dct1D, b);
 
     for (int i=0; i<N/b; i++) {
         for (int j=0; j<N/b; j++) {
-            float block[N*N];
-            int block_indices[b*b]; // all indices of a block w.r.t to the N*N image
+            vecf block(N*N);
+            veci block_indices(b*b);  // all indices of a block w.r.t to the N*N image
             for (int k=0; k<b*b; k++) {
                 int block_index = i*N*b + j*b + (k/b)*N + k%b;
                 block_indices[k] = block_index;
                 block[k] = A[block_index];
             }
             // end of block
-            float transformed_block[b*b];
-            transform(block, transformed_block, b);
-            for (int l=0; l < b*b; l++) {A_dct[block_indices[l]] = transformed_block[l];}
-            float Qdct_block[b*b];
-            quantization(Qtable, transformed_block, Qdct_block, b);
-            for (int l=0; l < b*b; l++) {A_Qdct[block_indices[l]] = Qdct_block[l];}
-            float IQdct_block[b*b];
-            inverseQuantization(Qtable, Qdct_block, IQdct_block, b);
-            for (int l=0; l < b*b; l++) {A_IQdct[block_indices[l]] = IQdct_block[l];}
-            float IQidct_block[b*b];
-            inverseTransform(IQdct_block, IQidct_block, b);
-            for (int l=0; l < b*b; l++) {A_IQidct[block_indices[l]] = IQidct_block[l];}
+            vecf transformed_block = transform(block, b);
+            store2(A_dct, transformed_block);
+            vecf Qdct_block = quantization(Qtable, transformed_block, b);
+            store2(A_Qdct, Qdct_block);
+            vecf IQdct_block = inverseQuantization(Qtable, Qdct_block, b);
+            store2(A_IQdct, IQdct_block);
+            vecf IQidct_block = inverseTransform(IQdct_block, b);
+            store2(A_IQidct, IQidct_block);
         }
     }
 }
 
-void encode(img A, img encoded, img Qtable, int N, int b) {
+vecf encode(vecf A, vecf Qtable, int N, int b) {
     // DCT transform + Quantization
     // b = blocksize
-    float dct1D[b*b]; // DCT matrix
-    createDCTmatrix(dct1D, 8);
-    float idct[b*b];  // IDCT matrix
-    transposeSquareMatrix(dct1D, idct, 8);
+    vecf dct1D = createDCTmatrix(b); // DCT matrix
+    vecf idct = transposeSquareMatrix(dct1D, b); // IDCT matrix
+    vecf encoded(N*N);
 
     for (int i=0; i<N/b; i++) {
         for (int j = 0; j < N / b; j++) {
-            float block[N * N];
-            int block_indices[b * b]; // all indices of a block w.r.t to the N*N image
+            vecf block(N*N);
+            veci block_indices(b*b);  // all indices of a block w.r.t to the N*N image
             for (int k = 0; k < b * b; k++) {
                 int block_index = i * N * b + j * b + (k / b) * N + k % b;
                 block_indices[k] = block_index;
                 block[k] = A[block_index];
             }
             // end of block
-            float transformed_block[b * b];
-            transform(block, transformed_block, b);
-            float Qdct_block[b * b];
-            quantization(Qtable, transformed_block, Qdct_block, b);
+            vecf transformed_block = transform(block, b);
+            vecf Qdct_block = quantization(Qtable, transformed_block, b);
             for (int l = 0; l < b * b; l++) { encoded[block_indices[l]] = Qdct_block[l]; }
         }
     }
+    return encoded;
 }
 
-void decode(img encoded, img decoded, img Qtable, int N, int b) {
+vecf decode(vecf encoded, vecf Qtable, int N, int b) {
     // Decode the quantized DCT coefficients by applying an inverse transform
     // b = blocksize
+    vecf decoded(N*N);
     for (int i=0; i<N/b; i++) {
         for (int j = 0; j < N / b; j++) {
-            float block[N * N];
-            int block_indices[b * b]; // all indices of a block w.r.t to the N*N image
+            vecf block(N*N);
+            veci block_indices(b*b);  // all indices of a block w.r.t to the N*N image
             for (int k = 0; k < b * b; k++) {
                 int block_index = i * N * b + j * b + (k / b) * N + k % b;
                 block_indices[k] = block_index;
                 block[k] = encoded[block_index];
             }
             // end of block
-            float IQdct_block[b*b];
-            inverseQuantization(Qtable, block, IQdct_block, b);
-            float IQidct_block[b*b];
-            inverseTransform(IQdct_block, IQidct_block, b);
+            vecf IQdct_block = inverseQuantization(Qtable, block, b);
+            vecf IQidct_block = inverseTransform(IQdct_block, b);
             for (int l=0; l < b*b; l++) {decoded[block_indices[l]] = IQidct_block[l];}
         }
     }
+    return decoded;
 }
 
-void clip(string filename, img image, int N) {
+//void clip(string filename, img image, int N) {
+//    // generate a grayscale 8x8 pixels image
+//    uint8_t grayscale_8bpp[N*N];
+//    for (int i=0; i<N; i++){
+//        for (int j=0; j<N; j++) {
+//            float value = round(image[r(i,j,N)]);
+//            if (value < 0.0) {
+//                value = 0.0;
+//            } else if (value > 256) {
+//                value = 256;
+//            }
+//            grayscale_8bpp[r(i,j,N)] = static_cast<uint8_t>(value);
+//        }
+//    }
+//
+//    ofstream file;
+//    file.open(filename, ios::out | ios::binary);
+//    if (file.is_open()) {
+//        file.write(reinterpret_cast<const char *>(grayscale_8bpp), sizeof(uint8_t[N*N]));
+//    } else {cout << "Error while opening the file : " << filename << endl; }
+//    file.close();
+//}
+
+void clip2(string filename, vecf image, int N) {
     // generate a grayscale 8x8 pixels image
-    uint8_t grayscale_8bpp[N*N];
+    vector<uint8_t> grayscale_8bpp(N*N);
     for (int i=0; i<N; i++){
         for (int j=0; j<N; j++) {
             float value = round(image[r(i,j,N)]);
@@ -426,12 +479,13 @@ void clip(string filename, img image, int N) {
     ofstream file;
     file.open(filename, ios::out | ios::binary);
     if (file.is_open()) {
-        file.write(reinterpret_cast<const char *>(grayscale_8bpp), sizeof(uint8_t[N*N]));
+        file.write(reinterpret_cast<const char*>(&grayscale_8bpp[0]), grayscale_8bpp.size()*sizeof(uint8_t));
     } else {cout << "Error while opening the file : " << filename << endl; }
     file.close();
 }
 
-void interleavedLayout(img contiguous_layout, img interleaved, int b, int N) {
+vecf interleavedLayout(vecf contiguous_layout, int b, int N) {
+    vecf interleaved(N*N);
     int Nb = N/b;
     for (int i = 0; i < Nb; i++) {
         for (int j = 0; j < Nb; j++) {
@@ -448,18 +502,19 @@ void interleavedLayout(img contiguous_layout, img interleaved, int b, int N) {
             }
         }
     }
+    return interleaved;
 }
 
 void TEST_interleavedLayout() {
-    float A[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-    float I[] = {0,2,1,3,8,10,9,11,4,6,5,7,12,14,13,15};
-    float B[16];
-    interleavedLayout(A, B, 2, 4);
+    vecf A{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+    vecf I{0,2,1,3,8,10,9,11,4,6,5,7,12,14,13,15};
+    vecf B = interleavedLayout(A, 2, 4);
     assert((std::equal(std::begin(B), std::end(B), std::begin(I)) == true));
 }
 
-void quantizedDCtermsMat(img image, img res, int b, int N) {
+vecf quantizedDCtermsMat(vecf image, int b, int N) {
     // get the quantized DC coefficients matrix of N/b * N/b elements
+    vecf res(N/b * N/b);
     int Nb = N / b;
     for (int i = 0; i < Nb; i++) {
         for (int j = 0; j < Nb; j++) {
@@ -467,39 +522,46 @@ void quantizedDCtermsMat(img image, img res, int b, int N) {
             res[r(i,j,Nb)] = image[DC_index];
         }
     }
+    return res;
 }
 
-void deltaEncoding(img image, int N) {
+vecf deltaEncoding(vecf image, int N) {
     // successive differences between terms
     // [2, 4, 6, 9, 7] ====>  [2, 2, 2, 3, −2]
+    vecf res(N*N);
     for (int i = N*N-1; i>0; i--) {
-        image[i] = image[i] - image[i-1];
+        res[i] = image[i] - image[i-1];
     }
+    res[0] = image[0];
+    return res;
 }
 
 void TEST_deltaEncoding() {
-    float A[9] = {2,4,6,9,7,8,2,3,1};
-    float D[9] = {2,2,2,3,-2,1,-6,1,-2};
-    deltaEncoding(A, 3);
-    assert((std::equal(std::begin(A), std::end(A), std::begin(D)) == true));
+    vecf A{2,4,6,9,7,8,2,3,1};
+    vecf res{2,2,2,3,-2,1,-6,1,-2};
+    vecf B = deltaEncoding(A, 3);
+    assert((std::equal(std::begin(res), std::end(res), std::begin(B)) == true));
 }
 
-void deltaDecoding(img image, int N) {
+vecf deltaDecoding(vecf image, int N) {
     // go back from delta encoding
     // [2, 2, 2, 3, −2] ====> [2, 4, 6, 9, 7]
+    vecf res(N*N);
+    res[0] = image[0];
     for (int i = 1; i < N*N; i++) {
-        image[i] = image[i] + image[i-1];
+        res[i] = image[i] + res[i-1];
     }
+    return res;
 }
 
 void TEST_deltaDecoding() {
-    float A[9] = {2,2,2,3,-2,1,-6,1,-2};
-    float D[9] = {2,4,6,9,7,8,2,3,1};
-    deltaDecoding(A, 3);
-    assert((std::equal(std::begin(A), std::end(A), std::begin(D)) == true));
+    vecf A{2,2,2,3,-2,1,-6,1,-2};
+    vecf res{2,4,6,9,7,8,2,3,1};
+    vecf B = deltaDecoding(A, 3);
+    assert((std::equal(std::begin(res), std::end(res), std::begin(B)) == true));
 }
 
-void storeTXTmatrix(string filename, img matrix, int N) {
+void storeTXTmatrix(string filename, vecf matrix, int N) {
     ofstream myfile (filename);
     if (myfile.is_open()) {
         for(int i = 0; i < N; i ++){
@@ -510,8 +572,8 @@ void storeTXTmatrix(string filename, img matrix, int N) {
 //    else cout << "Unable to open file";
 }
 
-void loadTXTmatrix(basic_string<char> filename, img matrix, int N) {
-
+vecf loadTXTmatrix(basic_string<char> filename, int N) {
+    vecf res(N);
     string line;
     ifstream myfile (filename);
     if (myfile.is_open()) {
@@ -519,20 +581,20 @@ void loadTXTmatrix(basic_string<char> filename, img matrix, int N) {
         stringstream ssin(line);
         int i = 0;
         while (ssin.good() && i < N) {
-            ssin >> matrix[i];
+            ssin >> res[i];
             ++i;
         }
         myfile.close();
     }
+    return res;
 
 //    else cout << "Unable to open file";
 }
 
 void TEST_store_load_txt(string filename) {
-    float A[] = {1,2,3,4,5,6,7,8,9};
+    vecf A{1,2,3,4,5,6,7,8,9};
     storeTXTmatrix(filename, A, 9);
-    float B[9];
-    loadTXTmatrix(filename, B, 9);
+    vecf B = loadTXTmatrix(filename, 9);
     assert((std::equal(std::begin(B), std::end(B), std::begin(A)) == true));
 }
 
@@ -566,19 +628,23 @@ void TEST_zigzagPattern() {
     assert((std::equal(std::begin(Z), std::end(Z), std::begin(res)) == true));
 }
 
-void zigzag(img A, img res, int N) {
+vecf zigzag(vecf A, int N) {
     // get the zigzag pattern of an image
+    vecf res(N*N);
     vector<int> zigzag_pattern = zigzagPattern(N);
     for (int i=0; i<N*N; i++) {
         res[i] = A[zigzag_pattern[i]];
     }
+    return res;
 }
 
-void inverseZigzag(vecf zigzag, vector<int> zigzag_pattern, img res, int N) {
+vecf inverseZigzag(vecf zigzag, vector<int> zigzag_pattern, int N) {
     // invert the zigzag pattern to get back the interleaved image
+    vecf res(N*N);
     for (int i=0; i<N*N; i++) {
         res[zigzag_pattern[i]] = zigzag[i];
     }
+    return res;
 }
 
 vector<int> getDCIndicesFromInterleaved(int b, int N) {
@@ -639,7 +705,7 @@ void TEST_getACzigzagPattern() {
     assert((std::equal(std::begin(A), std::end(A), std::begin(res)) == true));
 }
 
-vecf getBackACDCzigzag(img DC_coeffs, vector<int> pattern, vecf AC_coeffs, int b, int N) {
+vecf getBackACDCzigzag(vecf DC_coeffs, vector<int> pattern, vecf AC_coeffs, int b, int N) {
     // get back the interleaved image by combining DC and AC coefficients
     vecf zigzag_pattern (pattern.size());
     veci DC_indices = getDCIndicesFromInterleaved(N/b, N);
@@ -661,7 +727,7 @@ vecf getBackACDCzigzag(img DC_coeffs, vector<int> pattern, vecf AC_coeffs, int b
 }
 
 void TEST_getBackACDCzigzag() {
-    float DC_c[4] = {1,2,5,6};
+    vecf DC_c{1,2,5,6};
     vector<int> DC {0, 1, 4, -1, 5, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
     vecf AC_c {9,3,4,7,10,13,14,11,8,12,15,16};
     vector<int> AC {8, 2, 3, 6, 9, 12, 13, 10, 7, 11, 14, 15};
@@ -672,15 +738,17 @@ void TEST_getBackACDCzigzag() {
 }
 
 
-void getACFromInterleaved(img interleaved, img AC_coeffs, int b, int N) {
+vecf getACFromInterleaved(vecf interleaved, int b, int N) {
     // Get the AC coefficients from the interleaved pattern image
     vector<int> zigzag_pattern = zigzagPattern(N);
     vector<int> DC_indices = getDCIndicesFromInterleaved(N/b, N);
     vector<int> AC_pattern = getACzigzagPattern(getDCIndicesFromInterleaved(N/b, N), zigzagPattern(N), N);
     int nb_AC = N*N - (N/b)*(N/b);
+    vecf AC_coeffs(nb_AC);
     for (int i=0; i<nb_AC; i++) {
         AC_coeffs[i] = interleaved[AC_pattern[i]];
     }
+    return AC_coeffs;
 }
 
 void display_RLE(vector<vector<float>> rle) {
@@ -689,7 +757,7 @@ void display_RLE(vector<vector<float>> rle) {
     }
 }
 
-vector<vector<float>> runLengthEncoding(img sequence, int N) {
+vector<vector<float>> runLengthEncoding(vecf sequence, int N) {
     // Produce the run length encoding of a sequence of values
     // WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWBWWWWWWWWWWWWWW
     // 12W1B12W3B24W1B14W
@@ -712,7 +780,7 @@ vector<vector<float>> runLengthEncoding(img sequence, int N) {
 }
 
 void TEST_runLengthEncoding() {
-    float A[16] = {1,1,2,3,1,1,1,0,0,0,0,0,0,1,1,1};
+    vecf A{1,1,2,3,1,1,1,0,0,0,0,0,0,1,1,1};
     vecf2 B = runLengthEncoding(A, 16);
     vecf counts;
     vecf symbols;
@@ -727,7 +795,7 @@ void TEST_runLengthEncoding() {
 }
 
 void storeRLE(string filename, vecf2 rle) {
-    float to_store[rle.size()*2];
+    vecf to_store(rle.size()*2);
     int k=0;
     for (unsigned int i=0; i<rle.size(); i++) {
         to_store[k] = rle[i][0];
@@ -739,15 +807,13 @@ void storeRLE(string filename, vecf2 rle) {
 
 int longuestRunLength(vector<vector<float>> runLengths) {
     // get the longuest run length
-    int longest = 0;
-    float symbol;
+    int longuest = 0;
     for (unsigned int i = 0; i < runLengths.size(); i++) {
-        if (runLengths[i][0] > longest) {
-            longest = runLengths[i][0];
-            symbol = runLengths[i][1];
+        if (runLengths[i][0] > longuest) {
+            longuest = runLengths[i][0];
         }
     }
-    return longest;
+    return longuest;
 }
 
 vecf occurences(vecf2 run_lengths) {
@@ -762,7 +828,7 @@ vecf occurences(vecf2 run_lengths) {
 }
 
 void TEST_occurences() {
-    float A[16] = {1,1,2,3,1,1,1,0,0,0,0,0,0,1,1,1};
+    vecf A{1,1,2,3,1,1,1,0,0,0,0,0,0,1,1,1};
     vecf2 B = runLengthEncoding(A, 16);
     vecf occ = occurences(B);
     vecf o {0,2,1,2,0,0,1};
@@ -785,7 +851,7 @@ vecf runLengthDecoding(vecf2 runLengths) {
 }
 
 void TEST_runLengthDecoding() {
-    float A[16] = {1,1,2,3,1,1,1,0,0,0,0,0,0,1,1,1};
+    vecf A{1,1,2,3,1,1,1,0,0,0,0,0,0,1,1,1};
     vecf2 B = runLengthEncoding(A, 16);
     vecf C = runLengthDecoding(B);
     assert((std::equal(std::begin(C), std::end(C), std::begin(A)) == true));
@@ -798,42 +864,37 @@ void showRunLengths(vecf2 rle) {
     cout << endl;
 }
 
-vecf2 encodeRLE(img A, img deltaEncodedDC, int N, int b) {
+vecf2 encodeRLE(vecf A, img deltaEncodedDC, int N, int b) {
     // takes an image and encode its DC coefficients with delta encoding and
     // run length encoding for AC coefficients
-    img8 Qtable;
-    getQtable(Qtable, b);
-    float encoded[N*N];
-    encode(A, encoded, Qtable, N, b);
-    quantizedDCtermsMat(encoded, deltaEncodedDC, b, N);
-    deltaEncoding(deltaEncodedDC, N/b);
+    vecf Qtable = getQtable();
+    vecf encoded = encode(A, Qtable, N, b);
+    vecf DC = quantizedDCtermsMat(encoded, b, N);
+    vecf deltaDC = deltaEncoding(DC, N/b);
+    for (unsigned int i=0; i<deltaDC.size(); i++) {deltaEncodedDC[i] = deltaDC[i];}
 
-    float interleaved[N*N];
-    interleavedLayout(encoded, interleaved, b, N);
+    vecf interleaved = interleavedLayout(encoded, b, N);
     int nb_AC = N*N - (N/b)*(N/b);
-    float AC_coeffs[nb_AC];
-    getACFromInterleaved(interleaved, AC_coeffs, b, N);
+    vecf AC_coeffs = getACFromInterleaved(interleaved, b, N);
     vecf2 encodedRLE = runLengthEncoding(AC_coeffs, nb_AC);
 
     return encodedRLE;
 }
 
-void decodeRLE(vecf2 encodedRLE, img decoded, img DC_coeffs, int N, int b) {
+vecf decodeRLE(vecf2 encodedRLE, vecf DC_coeffs, int N, int b) {
     // Takes a run length Encoding and decode into an image
     vecf AC_coeffs = runLengthDecoding(encodedRLE);
-    deltaDecoding(DC_coeffs, N/b); // DC coefficients after delta decoding
+    vecf deltaDecodedDC = deltaDecoding(DC_coeffs, N/b); // DC coefficients after delta decoding
     vector<int> DC_pattern = getDCzigzagPattern(getDCIndicesFromInterleaved(N/b, N), zigzagPattern(N), N);
 
-    vecf zigzagACDC = getBackACDCzigzag(DC_coeffs, DC_pattern, AC_coeffs, b,N); // zigzag with AC + DC coeffs
+    vecf zigzagACDC = getBackACDCzigzag(deltaDecodedDC, DC_pattern, AC_coeffs, b,N); // zigzag with AC + DC coeffs
 
-    float inv_zigzag[N*N];
-    inverseZigzag(zigzagACDC, zigzagPattern(N), inv_zigzag, N);
+    vecf inv_zigzag = inverseZigzag(zigzagACDC, zigzagPattern(N), N);
 
-    float inv_interleaved[N*N];
-    interleavedLayout(inv_zigzag, inv_interleaved, N/b, N); //get back contiguous
-    img8 Qtable;
-    getQtable(Qtable, b);
-    decode(inv_interleaved, decoded, Qtable, N, b);
+    vecf inv_interleaved = interleavedLayout(inv_zigzag, N/b, N); //get back contiguous
+    vecf Qtable = getQtable();
+    vecf decoded = decode(inv_interleaved, Qtable, N, b);
+    return decoded;
 }
 
 vecf normalizeOccurences(vecf occ) {
@@ -1069,13 +1130,13 @@ string generateBitStreamAC(vecf2 rle) {
 }
 
 void TEST_generateBitStreamAC() {
-    float A[16] = {1,1,2,3,1,1,1,0,0,0,0,0,0,1,1,1};
+    vecf A{1,1,2,3,1,1,1,0,0,0,0,0,0,1,1,1};
     vecf2 B = runLengthEncoding(A, 16);
     string b = generateBitStreamAC(B);
     assert(b == "001000100100010001000110001100100001100100110010");
 }
 
-string generateBitStreamDC(img image, int N) {
+string generateBitStreamDC(vecf image, int N) {
     // image = DC coefficients image
     string bitstream = "";
     for (int i=0; i < N*N; i++) {
@@ -1087,12 +1148,14 @@ string generateBitStreamDC(img image, int N) {
     return bitstream;
 }
 
-string compress(string fileDC, string fileAC, img image, int N, int b) {
+string compress(string fileDC, string fileAC, vecf image, int N, int b) {
     // compress an image into a bitstream (delta encoding + Golomb for DC coefficients and
     // Run length encoding + Variable Length encoding (Golomb) for AC coefficients)
     float deltaEncodedDC[(N/b)*(N/b)];
     vecf2 encodedRLE = encodeRLE(image, deltaEncodedDC, N, b);
-    string bitstreamDC = generateBitStreamDC(deltaEncodedDC, N/b);
+    vecf DC_coeffs((N/b)*(N/b));
+    for (unsigned int i=0; i<DC_coeffs.size(); i++) {DC_coeffs[i] = deltaEncodedDC[i];}
+    string bitstreamDC = generateBitStreamDC(DC_coeffs, N/b);
     storeBitstream(fileDC, bitstreamDC);
     string bitstreamAC = generateBitStreamAC(encodedRLE);
     storeBitstream(fileAC, bitstreamAC);
@@ -1135,14 +1198,14 @@ vecf2 bitstreamACToRLE(string bitstream) {
 }
 
 void TEST_bitstreamACToRLE() {
-    float A[16] = {1,1,2,3,1,1,1,0,0,0,0,0,0,1,1,1};
+    vecf A{1,1,2,3,1,1,1,0,0,0,0,0,0,1,1,1};
     vecf2 B = runLengthEncoding(A, 16);
     string b = "001000100100010001000110001100100001100100110010";
     vecf2 R = bitstreamACToRLE(b);
     assert((std::equal(std::begin(R), std::end(R), std::begin(B)) == true));
 }
 
-void bitstreamDCToDelta(string bitstream, img deltaEncodedDC) {
+vecf bitstreamDCToDelta(string bitstream) {
     // convert a bitstream to an array representing the delta encoded DC coefficients
     vecf decoded;
     int i = -1;
@@ -1169,20 +1232,18 @@ void bitstreamDCToDelta(string bitstream, img deltaEncodedDC) {
             nb_zeros = 0;
         }
     }
-    for (unsigned int i=0; i<decoded.size(); i++) {
-        deltaEncodedDC[i] = decoded[i];
-    }
+    return decoded;
 }
 
-void decompress(string fileDC, string fileAC, img decompressed, int N, int b) {
+vecf decompress(string fileDC, string fileAC, int N, int b) {
     // decompress the image from 2 bitstreams of DC and AC coefficients
     string bitstreamDC = loadBitstream(fileDC);
-    float deltaEncodedDC[(N/b)*(N/b)];
-    bitstreamDCToDelta(bitstreamDC, deltaEncodedDC);
+    vecf deltaEncodedDC = bitstreamDCToDelta(bitstreamDC);
     string bitstreamAC = loadBitstream(fileAC);
 
     vecf2 decodedRLE = bitstreamACToRLE(bitstreamAC);
-    decodeRLE(decodedRLE, decompressed, deltaEncodedDC, N, b);
+    vecf decompressed = decodeRLE(decodedRLE, deltaEncodedDC, N, b);
+    return decompressed;
 }
 
 
