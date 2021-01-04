@@ -55,7 +55,8 @@ typedef vector<vector<float>> vecf2;
 #define FILE_QDCT_8_2  "session4/8_2_2_lena_Qdct.raw"
 #define FILE_IQDCT_8_2  "session4/8_2_3_lena_IQdct.raw"
 #define FILE_IQIDCT_8_2  "session4/8_2_4_lena_IQidct.raw"
-#define FILE_IQIDCT_8_2_8bpp "session4/8_4_lena_8bpp.raw"
+#define FILE_QDCT_8_2_8bpp "session4/8_4_approx_lena_8bpp.raw"
+#define FILE_IQIDCT_8_2_8bpp "session4/8_4_dec_lena_8bpp.raw"
 #define FILE_ENCODED_LENA8_5  "session4/8_5_encoded_lena.raw"
 #define FILE_DECODED_LENA8_5  "session4/8_5_decoded_lena.raw"
 #define FILE_CONTIGUOUS_9 "session4/9_contiguous_lena.raw"
@@ -364,8 +365,10 @@ void ex8_3() {
 
 void ex8_4() {
     cout << "----- 8.4" << endl;
-    vecf approximated_lena = load(FILE_IQIDCT_8_2, 256*256);
-    clip2(FILE_IQIDCT_8_2_8bpp, approximated_lena, 256);
+    vecf approximated_lena = load(FILE_QDCT_8_2, 256*256);
+    clip2(FILE_QDCT_8_2_8bpp, approximated_lena, 256);
+    vecf decoded_approximated_lena = load(FILE_IQIDCT_8_2, 256*256);
+    clip2(FILE_IQIDCT_8_2_8bpp, decoded_approximated_lena, 256);
 }
 
 void ex8_5() {
