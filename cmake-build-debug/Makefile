@@ -123,59 +123,59 @@ IVT_workbook/fast:
 	$(MAKE) -f CMakeFiles/IVT_workbook.dir/build.make CMakeFiles/IVT_workbook.dir/build
 .PHONY : IVT_workbook/fast
 
-functions.o: functions.cpp.o
+IVT2020_Heneffe_Alexandre_functions.o: IVT2020_Heneffe_Alexandre_functions.cpp.o
 
-.PHONY : functions.o
-
-# target to build an object file
-functions.cpp.o:
-	$(MAKE) -f CMakeFiles/IVT_workbook.dir/build.make CMakeFiles/IVT_workbook.dir/functions.cpp.o
-.PHONY : functions.cpp.o
-
-functions.i: functions.cpp.i
-
-.PHONY : functions.i
-
-# target to preprocess a source file
-functions.cpp.i:
-	$(MAKE) -f CMakeFiles/IVT_workbook.dir/build.make CMakeFiles/IVT_workbook.dir/functions.cpp.i
-.PHONY : functions.cpp.i
-
-functions.s: functions.cpp.s
-
-.PHONY : functions.s
-
-# target to generate assembly for a file
-functions.cpp.s:
-	$(MAKE) -f CMakeFiles/IVT_workbook.dir/build.make CMakeFiles/IVT_workbook.dir/functions.cpp.s
-.PHONY : functions.cpp.s
-
-main.o: main.cpp.o
-
-.PHONY : main.o
+.PHONY : IVT2020_Heneffe_Alexandre_functions.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) -f CMakeFiles/IVT_workbook.dir/build.make CMakeFiles/IVT_workbook.dir/main.cpp.o
-.PHONY : main.cpp.o
+IVT2020_Heneffe_Alexandre_functions.cpp.o:
+	$(MAKE) -f CMakeFiles/IVT_workbook.dir/build.make CMakeFiles/IVT_workbook.dir/IVT2020_Heneffe_Alexandre_functions.cpp.o
+.PHONY : IVT2020_Heneffe_Alexandre_functions.cpp.o
 
-main.i: main.cpp.i
+IVT2020_Heneffe_Alexandre_functions.i: IVT2020_Heneffe_Alexandre_functions.cpp.i
 
-.PHONY : main.i
+.PHONY : IVT2020_Heneffe_Alexandre_functions.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) -f CMakeFiles/IVT_workbook.dir/build.make CMakeFiles/IVT_workbook.dir/main.cpp.i
-.PHONY : main.cpp.i
+IVT2020_Heneffe_Alexandre_functions.cpp.i:
+	$(MAKE) -f CMakeFiles/IVT_workbook.dir/build.make CMakeFiles/IVT_workbook.dir/IVT2020_Heneffe_Alexandre_functions.cpp.i
+.PHONY : IVT2020_Heneffe_Alexandre_functions.cpp.i
 
-main.s: main.cpp.s
+IVT2020_Heneffe_Alexandre_functions.s: IVT2020_Heneffe_Alexandre_functions.cpp.s
 
-.PHONY : main.s
+.PHONY : IVT2020_Heneffe_Alexandre_functions.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) -f CMakeFiles/IVT_workbook.dir/build.make CMakeFiles/IVT_workbook.dir/main.cpp.s
-.PHONY : main.cpp.s
+IVT2020_Heneffe_Alexandre_functions.cpp.s:
+	$(MAKE) -f CMakeFiles/IVT_workbook.dir/build.make CMakeFiles/IVT_workbook.dir/IVT2020_Heneffe_Alexandre_functions.cpp.s
+.PHONY : IVT2020_Heneffe_Alexandre_functions.cpp.s
+
+IVT2020_Heneffe_Alexandre_main.o: IVT2020_Heneffe_Alexandre_main.cpp.o
+
+.PHONY : IVT2020_Heneffe_Alexandre_main.o
+
+# target to build an object file
+IVT2020_Heneffe_Alexandre_main.cpp.o:
+	$(MAKE) -f CMakeFiles/IVT_workbook.dir/build.make CMakeFiles/IVT_workbook.dir/IVT2020_Heneffe_Alexandre_main.cpp.o
+.PHONY : IVT2020_Heneffe_Alexandre_main.cpp.o
+
+IVT2020_Heneffe_Alexandre_main.i: IVT2020_Heneffe_Alexandre_main.cpp.i
+
+.PHONY : IVT2020_Heneffe_Alexandre_main.i
+
+# target to preprocess a source file
+IVT2020_Heneffe_Alexandre_main.cpp.i:
+	$(MAKE) -f CMakeFiles/IVT_workbook.dir/build.make CMakeFiles/IVT_workbook.dir/IVT2020_Heneffe_Alexandre_main.cpp.i
+.PHONY : IVT2020_Heneffe_Alexandre_main.cpp.i
+
+IVT2020_Heneffe_Alexandre_main.s: IVT2020_Heneffe_Alexandre_main.cpp.s
+
+.PHONY : IVT2020_Heneffe_Alexandre_main.s
+
+# target to generate assembly for a file
+IVT2020_Heneffe_Alexandre_main.cpp.s:
+	$(MAKE) -f CMakeFiles/IVT_workbook.dir/build.make CMakeFiles/IVT_workbook.dir/IVT2020_Heneffe_Alexandre_main.cpp.s
+.PHONY : IVT2020_Heneffe_Alexandre_main.cpp.s
 
 # Help Target
 help:
@@ -186,12 +186,12 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... IVT_workbook"
 	@echo "... edit_cache"
-	@echo "... functions.o"
-	@echo "... functions.i"
-	@echo "... functions.s"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... IVT2020_Heneffe_Alexandre_functions.o"
+	@echo "... IVT2020_Heneffe_Alexandre_functions.i"
+	@echo "... IVT2020_Heneffe_Alexandre_functions.s"
+	@echo "... IVT2020_Heneffe_Alexandre_main.o"
+	@echo "... IVT2020_Heneffe_Alexandre_main.i"
+	@echo "... IVT2020_Heneffe_Alexandre_main.s"
 .PHONY : help
 
 

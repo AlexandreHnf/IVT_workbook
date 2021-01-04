@@ -4,5 +4,5 @@ project(IVT_workbook)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(IVT_workbook
-        functions.cpp
-        main.cpp)
+        IVT2020_Heneffe_Alexandre_functions.cpp
+        IVT2020_Heneffe_Alexandre_main.cpp)

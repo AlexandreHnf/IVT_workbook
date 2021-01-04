@@ -3,7 +3,7 @@
 #include <fstream>
 #include <random>
 #include <sstream>
-#include "functions.cpp"
+#include "IVT2020_Heneffe_Alexandre_functions.cpp"
 
 using namespace std;
 
@@ -15,70 +15,69 @@ typedef float img32[32*32];
 typedef vector<float> vecf;
 typedef vector<vector<float>> vecf2;
 
-// TODO : rename each file with IVT2020_Heneffe_Alexandre
-#define TEST_LOAD_STORE "test_files/test_load_store.raw"
-#define TEST_LOAD_STORE_TXT "test_files/test_load_store_txt.txt"
-#define TEST_LOAD_STORE_BITSTR "test_files/test_load_store_bitstream.txt"
+#define TEST_LOAD_STORE "IVT2020_Heneffe_Alexandre_test_files/test_load_store.raw"
+#define TEST_LOAD_STORE_TXT "IVT2020_Heneffe_Alexandre_test_files/test_load_store_txt.txt"
+#define TEST_LOAD_STORE_BITSTR "IVT2020_Heneffe_Alexandre_test_files/test_load_store_bitstream.txt"
 
 #define FILE_LENA "lena_256x256.raw"
 
 // SESSION 1
-#define FILE_COS_PATTERN  "session1/2_2_img_cos_pattern.raw"
-#define FILE_COS_PATTERN_LENA  "session1/3_3_modified_lena_256x256.raw"
+#define FILE_COS_PATTERN  "IVT2020_Heneffe_Alexandre_session1/2_2_img_cos_pattern.raw"
+#define FILE_COS_PATTERN_LENA  "IVT2020_Heneffe_Alexandre_session1/3_3_modified_lena_256x256.raw"
 
 // SESSION 2
-#define FILE_UNIFORM  "session2/4_1_uniform_image.raw"
-#define FILE_GAUSSIAN  "session2/4_2_gaussian_image.raw"
-#define FILE_UNIFORM_LENA  "session2/4_4_1_uniform_lena_256x256.raw"
-#define FILE_GAUSSIAN_LENA  "session2/4_4_2_gaussian_lena_256x256.raw"
-#define FILE_BLURRY_LENA  "session2/5_1_blurry_lena_generated_manually.raw"
-#define FILE_GAUSSIAN_BLURRY_LENA_5_2  "session2/5_2_blurry_gaussian_high_lena_256x256.raw"
-#define FILE_GAUSSIAN_LENA_5_3  "session2/5_3_gaussian_lena_256x256.raw"
-#define FILE_GAUSSIAN_LENA_5_4_1  "session2/5_4_gaussian_lena_1_generated_manually.raw"
-#define FILE_GAUSSIAN_LENA_5_4_1_5  "session2/5_4_gaussian_lena_1_5_generated_manually.raw"
+#define FILE_UNIFORM  "IVT2020_Heneffe_Alexandre_session2/4_1_uniform_image.raw"
+#define FILE_GAUSSIAN  "IVT2020_Heneffe_Alexandre_session2/4_2_gaussian_image.raw"
+#define FILE_UNIFORM_LENA  "IVT2020_Heneffe_Alexandre_session2/4_4_1_uniform_lena_256x256.raw"
+#define FILE_GAUSSIAN_LENA  "IVT2020_Heneffe_Alexandre_session2/4_4_2_gaussian_lena_256x256.raw"
+#define FILE_BLURRY_LENA  "IVT2020_Heneffe_Alexandre_session2/5_1_blurry_lena_generated_manually.raw"
+#define FILE_GAUSSIAN_BLURRY_LENA_5_2  "IVT2020_Heneffe_Alexandre_session2/5_2_blurry_gaussian_high_lena_256x256.raw"
+#define FILE_GAUSSIAN_LENA_5_3  "IVT2020_Heneffe_Alexandre_session2/5_3_gaussian_lena_256x256.raw"
+#define FILE_GAUSSIAN_LENA_5_4_1  "IVT2020_Heneffe_Alexandre_session2/5_4_gaussian_lena_1_generated_manually.raw"
+#define FILE_GAUSSIAN_LENA_5_4_1_5  "IVT2020_Heneffe_Alexandre_session2/5_4_gaussian_lena_1_5_generated_manually.raw"
 
 // SESSION 3
-#define FILE_DCT_MATRIX  "session3/6_1_dct_matrix.raw"
-#define FILE_IDCT_MATRIX  "session3/6_3_idct_matrix.raw"
-#define FILE_DCT_LENA  "session3/7_1_dct_lena.raw"
-#define FILE_THRESHOLD_DCT_LENA  "session3/7_2_threshold_dct_lena10.raw"
-#define FILE_RECONSTRUCTED_THRESHOLD_DCT_LENA_10  "session3/7_3_rec_threshold_dct_lena10.raw"
-#define FILE_RECONSTRUCTED_THRESHOLD_DCT_LENA_5  "session3/7_3_rec_threshold_dct_lena5.raw"
-#define FILE_RECONSTRUCTED_THRESHOLD_DCT_LENA_20  "session3/7_3_rec_threshold_dct_lena20.raw"
-#define FILE_RECONSTRUCTED_THRESHOLD_DCT_LENA_2  "session3/7_3_rec_threshold_dct_lena2.raw"
-#define FILE_RECONSTRUCTED_DCT_LENA  "session3/7_3_rec_dct_lena.raw"
+#define FILE_DCT_MATRIX  "IVT2020_Heneffe_Alexandre_session3/6_1_dct_matrix.raw"
+#define FILE_IDCT_MATRIX  "IVT2020_Heneffe_Alexandre_session3/6_3_idct_matrix.raw"
+#define FILE_DCT_LENA  "IVT2020_Heneffe_Alexandre_session3/7_1_dct_lena.raw"
+#define FILE_THRESHOLD_DCT_LENA  "IVT2020_Heneffe_Alexandre_session3/7_2_threshold_dct_lena10.raw"
+#define FILE_RECONSTRUCTED_THRESHOLD_DCT_LENA_10  "IVT2020_Heneffe_Alexandre_session3/7_3_rec_threshold_dct_lena10.raw"
+#define FILE_RECONSTRUCTED_THRESHOLD_DCT_LENA_5  "IVT2020_Heneffe_Alexandre_session3/7_3_rec_threshold_dct_lena5.raw"
+#define FILE_RECONSTRUCTED_THRESHOLD_DCT_LENA_20  "IVT2020_Heneffe_Alexandre_session3/7_3_rec_threshold_dct_lena20.raw"
+#define FILE_RECONSTRUCTED_THRESHOLD_DCT_LENA_2  "IVT2020_Heneffe_Alexandre_session3/7_3_rec_threshold_dct_lena2.raw"
+#define FILE_RECONSTRUCTED_DCT_LENA  "IVT2020_Heneffe_Alexandre_session3/7_3_rec_dct_lena.raw"
 
 // SESSION 4
-#define FILE_QUANTIZATION  "session4/8_1_quantization.raw"
-#define FILE_8BPP_LENA  "session4/8_3_8bpp_lena.raw"
-#define FILE_DCT_8_2  "session4/8_2_1_lena_dct.raw"
-#define FILE_QDCT_8_2  "session4/8_2_2_lena_Qdct.raw"
-#define FILE_IQDCT_8_2  "session4/8_2_3_lena_IQdct.raw"
-#define FILE_IQIDCT_8_2  "session4/8_2_4_lena_IQidct.raw"
-#define FILE_QDCT_8_2_8bpp "session4/8_4_approx_lena_8bpp.raw"
-#define FILE_IQIDCT_8_2_8bpp "session4/8_4_dec_lena_8bpp.raw"
-#define FILE_ENCODED_LENA8_5  "session4/8_5_encoded_lena.raw"
-#define FILE_DECODED_LENA8_5  "session4/8_5_decoded_lena.raw"
-#define FILE_CONTIGUOUS_9 "session4/9_contiguous_lena.raw"
-#define FILE_INTERLEAVED_9 "session4/9_interleaved_lena.raw"
-#define FILE_INV_INTERLEAVED_9 "session4/9_inv_interleaved_lena.raw"
+#define FILE_QUANTIZATION  "IVT2020_Heneffe_Alexandre_session4/8_1_quantization.raw"
+#define FILE_8BPP_LENA  "IVT2020_Heneffe_Alexandre_session4/8_3_8bpp_lena.raw"
+#define FILE_DCT_8_2  "IVT2020_Heneffe_Alexandre_session4/8_2_1_lena_dct.raw"
+#define FILE_QDCT_8_2  "IVT2020_Heneffe_Alexandre_session4/8_2_2_lena_Qdct.raw"
+#define FILE_IQDCT_8_2  "IVT2020_Heneffe_Alexandre_session4/8_2_3_lena_IQdct.raw"
+#define FILE_IQIDCT_8_2  "IVT2020_Heneffe_Alexandre_session4/8_2_4_lena_IQidct.raw"
+#define FILE_QDCT_8_2_8bpp "IVT2020_Heneffe_Alexandre_session4/8_4_approx_lena_8bpp.raw"
+#define FILE_IQIDCT_8_2_8bpp "IVT2020_Heneffe_Alexandre_session4/8_4_dec_lena_8bpp.raw"
+#define FILE_ENCODED_LENA8_5  "IVT2020_Heneffe_Alexandre_session4/8_5_encoded_lena.raw"
+#define FILE_DECODED_LENA8_5  "IVT2020_Heneffe_Alexandre_session4/8_5_decoded_lena.raw"
+#define FILE_CONTIGUOUS_9 "IVT2020_Heneffe_Alexandre_session4/9_contiguous_lena.raw"
+#define FILE_INTERLEAVED_9 "IVT2020_Heneffe_Alexandre_session4/9_interleaved_lena.raw"
+#define FILE_INV_INTERLEAVED_9 "IVT2020_Heneffe_Alexandre_session4/9_inv_interleaved_lena.raw"
 
 // SESSION 5
-#define FILE_32_QDCT "session5/10_1_qdct_lena32x32.raw"
-#define FILE_AVERAGE_DOWNSIZED "session5/10_1_downsized_average_lena32_generated_manually.raw"
-#define FILE_DELTA_DC_TXT "session5/10_2_delta_dct.txt"
-#define FILE_RECONSTRUCTED_DELTA "session5/10_3_reconstructed_delta_dct.raw"
-#define FILE_11_2_TXT "session5/11_2_RLE.txt"
-#define FILE_DECODED_11_3 "session5/11_3_decoded_lena.raw"
-#define FILE_12_2_NORMALIZED "session5/12_2_normalized.txt"
-#define FILE_12_2_OCC "session5/12_2_occ.txt"
+#define FILE_32_QDCT "IVT2020_Heneffe_Alexandre_session5/10_1_qdct_lena32x32.raw"
+#define FILE_AVERAGE_DOWNSIZED "IVT2020_Heneffe_Alexandre_session5/10_1_downsized_average_lena32_generated_manually.raw"
+#define FILE_DELTA_DC_TXT "IVT2020_Heneffe_Alexandre_session5/10_2_delta_dct.txt"
+#define FILE_RECONSTRUCTED_DELTA "IVT2020_Heneffe_Alexandre_session5/10_3_reconstructed_delta_dct.raw"
+#define FILE_11_2_TXT "IVT2020_Heneffe_Alexandre_session5/11_2_RLE.txt"
+#define FILE_DECODED_11_3 "IVT2020_Heneffe_Alexandre_session5/11_3_decoded_lena.raw"
+#define FILE_12_2_NORMALIZED "IVT2020_Heneffe_Alexandre_session5/12_2_normalized.txt"
+#define FILE_12_2_OCC "IVT2020_Heneffe_Alexandre_session5/12_2_occ.txt"
 
 // SESSION 6
-#define FILE_BITSTREAM_AC_14_1 "session6/14_1_bitstream_AC.txt"
-#define FILE_BITSTREAM_DC_14_1 "session6/14_1_bitstream_DC.txt"
-#define FILE_DELTA_DC_14_1 "session6/14_1_delta_encoded_DC.txt"
-#define FILE_DECOMPRESSED_LENA_14_2 "session6/14_2_decompressed_lena.raw"
-#define FILE_CLIP_14_2 "session6/14_2_clipped_decompressed.raw"
+#define FILE_BITSTREAM_AC_14_1 "IVT2020_Heneffe_Alexandre_session6/14_1_bitstream_AC.txt"
+#define FILE_BITSTREAM_DC_14_1 "IVT2020_Heneffe_Alexandre_session6/14_1_bitstream_DC.txt"
+#define FILE_DELTA_DC_14_1 "IVT2020_Heneffe_Alexandre_session6/14_1_delta_encoded_DC.txt"
+#define FILE_DECOMPRESSED_LENA_14_2 "IVT2020_Heneffe_Alexandre_session6/14_2_decompressed_lena.raw"
+#define FILE_CLIP_14_2 "IVT2020_Heneffe_Alexandre_session6/14_2_clipped_decompressed.raw"
 
 
 

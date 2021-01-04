@@ -1,6 +1,6 @@
 FLAGS= -Wall -Wextra -pedantic
 all: Main
 
-Main: main.cpp
-	g++ $(FLAGS) -c main.cpp 
-	g++ $(FLAGS) main.o -o main
+Main: IVT2020_Heneffe_Alexandre_main.cpp
+	g++ $(FLAGS) -c IVT2020_Heneffe_Alexandre_main.cpp 
+	g++ $(FLAGS) IVT2020_Heneffe_Alexandre_main.o -o main
